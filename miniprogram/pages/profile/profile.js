@@ -1,10 +1,10 @@
 // pages/profile/profile.js
+const app = getApp();
+
 Page({
   data: {
-    userInfo: {
-      nickname: '',
-      avatar: ''
-    },
+    isLogin: false,
+    userInfo: { nickname: '', avatar: '' },
     services: [
       { type: 'records', icon: '/images/icon-svc-records.svg', label: '我的预约', desc: '查看我的记录' },
       { type: 'counsel', icon: '/images/icon-svc-counsel.svg', label: '我的咨询', desc: '查看咨询记录' },
@@ -19,13 +19,33 @@ Page({
     ]
   },
 
-  onLoad() {
+  onShow() {
     this.checkLogin();
   },
 
-  async checkLogin() {
-    // CloudBase 自动获取 openid
-    // 在实际使用中，这里获取用户信息
+  checkLogin() {
+    const userInfo = wx.getStorageSync('userInfo');
+    if (userInfo) {
+      this.setData({ isLogin: true, userInfo });
+    }
+  },
+
+  // 微信一键登录
+  onWxLogin() {
+    wx.getUserProfile({
+      desc: '用于展示您的昵称和头像',
+      success: (res) => {
+        const userInfo = res.userInfo;
+        this.setData({ isLogin: true, userInfo });
+        wx.setStorageSync('userInfo', userInfo);
+        app.globalData.userInfo = userInfo;
+
+        wx.showToast({ title: '登录成功', icon: 'success' });
+      },
+      fail: (err) => {
+        console.log('登录取消:', err);
+      }
+    });
   },
 
   onEditProfile() {

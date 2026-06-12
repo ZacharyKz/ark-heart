@@ -72,6 +72,9 @@ exports.main = async (event, context) => {
         const { id, counselor, dateText, location } = event;
         if (!id) return { success: false, message: '缺少预约 ID' };
 
+        // 先获取预约信息（需要 openid 发通知）
+        const appt = await db.collection('appointments').doc(id).get();
+
         await db.collection('appointments').doc(id).update({
           data: {
             status: 'confirmed',
@@ -83,20 +86,22 @@ exports.main = async (event, context) => {
         });
 
         // 发送订阅消息通知
-        try {
-          await cloud.openapi.subscribeMessage.send({
-            touser: appt.data._openid,
-            templateId: 'TWLsZQ3vYBhWycHcN0xN5Vd3YM5yf_p7EMRldqn3dm0',
-            page: '/pages/records/records',
-            data: {
-              date3: { value: dateText || '已确认' },
-              name5: { value: appt.data.name || '来访者' },
-              thing2: { value: location || '已安排' }
-            },
-            miniprogramState: 'formal'
-          });
-        } catch (e) {
-          console.error('订阅消息失败:', e.message);
+        if (appt.data && appt.data._openid) {
+          try {
+            await cloud.openapi.subscribeMessage.send({
+              touser: appt.data._openid,
+              templateId: 'TWLsZQ3vYBhWycHcN0xN5Vd3YM5yf_p7EMRldqn3dm0',
+              page: '/pages/records/records',
+              data: {
+                date3: { value: dateText || '已确认' },
+                name5: { value: appt.data.name || '来访者' },
+                thing2: { value: location || '已安排' }
+              },
+              miniprogramState: 'formal'
+            });
+          } catch (e) {
+            console.error('订阅消息失败:', e.errMsg || e.message);
+          }
         }
 
         return { success: true, message: '预约已确认' };

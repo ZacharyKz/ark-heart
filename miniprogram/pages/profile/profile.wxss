@@ -1,0 +1,50 @@
+/* pages/profile/profile.wxss */
+.page { min-height: 100vh; background: var(--bg); padding-bottom: 110rpx; }
+.status-bar-placeholder { height: var(--status-bar-height, 44px); background: var(--bg); }
+
+.brand-header { display: flex; align-items: center; justify-content: space-between; padding: 0 40rpx; height: 88rpx; }
+.header-left { display: flex; align-items: center; gap: 16rpx; }
+.header-logo { width: 52rpx; height: 48rpx; }
+.header-title { font-size: 36rpx; font-weight: 600; color: var(--text-primary); }
+.settings-icon { width: 40rpx; height: 40rpx; }
+.header-menu { padding: 16rpx; margin-right: -16rpx; }
+
+/* 用户信息 */
+.pf-header-banner { display: flex; align-items: center; padding: 32rpx 40rpx; gap: 28rpx; }
+.pf-avatar { width: 112rpx; height: 112rpx; border-radius: 50%; border: 4rpx solid #fff; box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.08); }
+.pf-user-info { flex: 1; min-width: 0; }
+.pf-user-name { font-size: 36rpx; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4rpx; }
+.pf-user-motto { font-size: 24rpx; color: var(--text-secondary); }
+.pf-edit-link { font-size: 24rpx; color: var(--text-tertiary); flex-shrink: 0; }
+
+/* 服务宫格 */
+.pf-section { padding: 0 32rpx; margin-bottom: 32rpx; }
+.pf-section-title { font-size: 30rpx; font-weight: 600; color: var(--text-primary); margin-bottom: 24rpx; display: block; }
+.pf-service-card {
+  background: #fff; border-radius: 24rpx; box-shadow: 0 2rpx 8rpx var(--shadow);
+  padding: 40rpx 16rpx; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8rpx;
+}
+.pf-service-tile { display: flex; flex-direction: column; align-items: center; gap: 12rpx; padding: 8rpx; border-radius: 16rpx; }
+.service-icon-wrap { width: 72rpx; height: 72rpx; display: flex; align-items: center; justify-content: center; }
+.service-icon-img { width: 56rpx; height: 56rpx; }
+.service-name { font-size: 24rpx; font-weight: 500; color: var(--text-primary); text-align: center; }
+.service-desc { font-size: 20rpx; color: var(--text-tertiary); text-align: center; }
+
+/* 菜单 */
+.pf-menu-card { background: #fff; border-radius: 24rpx; box-shadow: 0 2rpx 8rpx var(--shadow); overflow: hidden; }
+.pf-menu-item { display: flex; align-items: center; padding: 28rpx 32rpx; min-height: 96rpx; }
+.pf-menu-item + .pf-menu-item { border-top: 1rpx solid #F5F5F3; }
+.menu-icon-wrap { width: 64rpx; height: 64rpx; display: flex; align-items: center; justify-content: center; margin-right: 24rpx; }
+.menu-icon-img { width: 40rpx; height: 40rpx; }
+.menu-label { flex: 1; font-size: 28rpx; font-weight: 500; color: var(--text-primary); }
+.menu-chevron { width: 32rpx; height: 32rpx; opacity: 0.4; }
+
+/* 励志横幅 */
+.pf-motivation-banner {
+  margin: 0 32rpx 48rpx; background: #F5F3EF; border-radius: 24rpx;
+  padding: 40rpx; display: flex; align-items: center; gap: 32rpx;
+}
+.motivation-text { flex: 1; }
+.motivation-quote { font-size: 30rpx; font-weight: 600; color: var(--text-primary); line-height: 1.6; display: block; margin-bottom: 12rpx; }
+.motivation-author { font-size: 24rpx; color: var(--text-secondary); }
+.motivation-img { width: 160rpx; height: 160rpx; border-radius: 20rpx; flex-shrink: 0; }

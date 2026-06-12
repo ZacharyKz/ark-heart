@@ -1,0 +1,153 @@
+<!-- pages/booking/booking.wxml — 预约表单 -->
+<view class="page">
+  <view class="status-bar-placeholder"></view>
+
+  <!-- Header -->
+  <view class="header-row">
+    <view class="back-btn" bindtap="onBack">
+      <image src="/images/chevron-left.svg" mode="aspectFit" class="back-icon" />
+    </view>
+    <text class="header-title">预约咨询</text>
+    <view class="header-spacer"></view>
+  </view>
+
+  <view class="content-body">
+    <!-- 表单区域 -->
+    <view class="form-card">
+      <!-- 姓名 -->
+      <view class="form-group">
+        <text class="form-label">姓名<text class="required">*</text></text>
+        <input
+          class="form-input"
+          placeholder="请输入您的姓名"
+          value="{{formData.name}}"
+          bindinput="onFieldChange"
+          data-field="name"
+          maxlength="20"
+        />
+      </view>
+
+      <!-- 手机号 -->
+      <view class="form-group">
+        <text class="form-label">手机号<text class="required">*</text></text>
+        <input
+          class="form-input"
+          type="number"
+          placeholder="请输入您的手机号"
+          value="{{formData.phone}}"
+          bindinput="onFieldChange"
+          data-field="phone"
+          maxlength="11"
+        />
+      </view>
+
+      <!-- 微信号 -->
+      <view class="form-group">
+        <text class="form-label">微信号<text class="required">*</text></text>
+        <input
+          class="form-input"
+          placeholder="请输入您的微信号"
+          value="{{formData.wechat}}"
+          bindinput="onFieldChange"
+          data-field="wechat"
+          maxlength="40"
+        />
+      </view>
+
+      <!-- 性别 -->
+      <view class="form-group">
+        <text class="form-label">性别<text class="required">*</text></text>
+        <view class="radio-group">
+          <view
+            wx:for="{{genderOptions}}"
+            wx:key="value"
+            class="radio-item {{formData.gender === item.value ? 'active' : ''}}"
+            bindtap="onGenderChange"
+            data-value="{{item.value}}"
+          >
+            <text>{{item.label}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 年龄 -->
+      <view class="form-group">
+        <text class="form-label">年龄<text class="required">*</text></text>
+        <picker mode="selector" range="{{ageOptions}}" bindchange="onAgeChange" value="{{ageIndex}}">
+          <view class="picker-value">
+            <text class="{{formData.age ? '' : 'placeholder'}}">
+              {{formData.age || '请选择您的年龄段'}}
+            </text>
+            <image src="/images/chevron-right.svg" mode="aspectFit" class="picker-arrow" />
+          </view>
+        </picker>
+      </view>
+
+      <!-- 咨询方向 -->
+      <view class="form-group">
+        <text class="form-label">咨询方向<text class="required">*</text></text>
+        <view class="radio-group vertical">
+          <view
+            wx:for="{{directionOptions}}"
+            wx:key="value"
+            class="radio-item {{formData.direction === item.value ? 'active' : ''}}"
+            bindtap="onDirectionChange"
+            data-value="{{item.value}}"
+          >
+            <text class="radio-label">{{item.label}}</text>
+            <text class="radio-desc">{{item.desc}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 问题简述 -->
+      <view class="form-group">
+        <text class="form-label">问题简述<text class="required">*</text></text>
+        <textarea
+          class="form-textarea"
+          placeholder="请简要描述您想解决的问题（500字以内）"
+          value="{{formData.description}}"
+          bindinput="onFieldChange"
+          data-field="description"
+          maxlength="500"
+          auto-height
+        />
+        <text class="char-count">{{formData.description.length || 0}}/500</text>
+      </view>
+
+      <!-- 咨询方式 -->
+      <view class="form-group">
+        <text class="form-label">咨询方式偏好</text>
+        <view class="radio-group">
+          <view
+            wx:for="{{modeOptions}}"
+            wx:key="value"
+            class="radio-item {{formData.mode === item.value ? 'active' : ''}}"
+            bindtap="onModeChange"
+            data-value="{{item.value}}"
+          >
+            <text>{{item.label}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 协议确认 -->
+    <view class="agreement-check">
+      <view class="checkbox-wrapper" bindtap="onToggleAgreement">
+        <view class="checkbox {{agreed ? 'checked' : ''}}">
+          <image wx:if="{{agreed}}" src="/images/icon-check.svg" mode="aspectFit" class="check-icon" />
+        </view>
+        <text class="agreement-label">我已阅读并同意《<text class="link" bindtap="onReadAgreement">咨询与预约协议</text>》</text>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <button class="btn-submit" disabled="{{!canSubmit}}" bindtap="onSubmit">
+      提交预约
+    </button>
+
+    <!-- 提示文字 -->
+    <text class="submit-hint">提交后，管理员将通过微信联系您确认咨询师和具体时间</text>
+  </view>
+</view>

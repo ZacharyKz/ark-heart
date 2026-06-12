@@ -1,0 +1,62 @@
+<!-- pages/profile/profile.wxml — 我的（个人中心） -->
+<view class="page">
+  <view class="status-bar-placeholder"></view>
+
+  <view class="brand-header">
+    <view class="header-left">
+      <image class="header-logo" src="/images/logo.svg" mode="aspectFit" />
+      <text class="header-title">The Ark Heart</text>
+    </view>
+    <view class="header-menu" bindtap="onSettingsTap">
+      <image src="/images/icon-settings.svg" mode="aspectFit" class="settings-icon" />
+    </view>
+  </view>
+
+  <!-- 用户信息 -->
+  <view class="pf-header-banner">
+    <image class="pf-avatar" src="{{userInfo.avatar || '/images/default-avatar.svg'}}" mode="aspectFill" />
+    <view class="pf-user-info">
+      <text class="pf-user-name">{{userInfo.nickname || '点击登录'}}</text>
+      <text class="pf-user-motto">愿你心安，找到内心的方舟</text>
+    </view>
+    <text class="pf-edit-link" bindtap="onEditProfile">编辑资料 &gt;</text>
+  </view>
+
+  <!-- 我的服务 -->
+  <view class="pf-section">
+    <text class="pf-section-title">我的服务</text>
+    <view class="pf-service-card">
+      <view class="pf-service-tile" wx:for="{{services}}" wx:key="label" bindtap="onTapService" data-type="{{item.type}}">
+        <view class="service-icon-wrap">
+          <image src="{{item.icon}}" mode="aspectFit" class="service-icon-img" />
+        </view>
+        <text class="service-name">{{item.label}}</text>
+        <text class="service-desc">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 菜单列表 -->
+  <view class="pf-section">
+    <view class="pf-menu-card">
+      <view class="pf-menu-item" wx:for="{{menuItems}}" wx:key="label" bindtap="onTapMenu" data-type="{{item.type}}">
+        <view class="menu-icon-wrap">
+          <image src="{{item.icon}}" mode="aspectFit" class="menu-icon-img" />
+        </view>
+        <text class="menu-label">{{item.label}}</text>
+        <image src="/images/chevron-right.svg" mode="aspectFit" class="menu-chevron" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 励志横幅 -->
+  <view class="pf-motivation-banner">
+    <view class="motivation-text">
+      <text class="motivation-quote">每一步探索，\n都在靠近更好的自己。</text>
+      <text class="motivation-author">— The Ark Heart</text>
+    </view>
+    <image class="motivation-img" src="/images/motivation.jpg" mode="aspectFill" />
+  </view>
+
+  <tab-bar current="{{3}}" />
+</view>

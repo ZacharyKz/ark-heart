@@ -1,0 +1,107 @@
+<!-- pages/home/home.wxml — 首页 -->
+<view class="page">
+  <!-- 状态栏占位 -->
+  <view class="status-bar-placeholder"></view>
+
+  <!-- Header -->
+  <view class="header-row">
+    <view class="header-left">
+      <image class="header-logo" src="/images/logo.svg" mode="aspectFit" />
+      <text class="header-title">The Ark Heart</text>
+    </view>
+    <view class="header-menu" bindtap="onMenuTap">
+      <view class="menu-dot"></view>
+      <view class="menu-dot"></view>
+      <view class="menu-dot"></view>
+    </view>
+  </view>
+
+  <!-- Banner -->
+  <view class="banner-area">
+    <image class="banner-img" src="/images/banner.jpg" mode="aspectFill" />
+  </view>
+
+  <view class="content-body">
+
+    <!-- 服务卡片（毛玻璃） -->
+    <view class="service-card">
+      <view class="service-item" bindtap="onTapService" data-type="counsel">
+        <image class="service-icon" src="/images/icon-counsel.svg" mode="aspectFit" />
+        <view class="service-text">
+          <text class="service-title">关爱咨询</text>
+          <text class="service-subtitle">线上/线下预约</text>
+        </view>
+        <image class="service-chevron" src="/images/chevron-right.svg" mode="aspectFit" />
+      </view>
+      <view class="service-item" bindtap="onTapService" data-type="direction">
+        <image class="service-icon" src="/images/icon-direction.svg" mode="aspectFit" />
+        <view class="service-text">
+          <text class="service-title">遵循方向</text>
+          <text class="service-subtitle">探索适合您的方向</text>
+        </view>
+        <image class="service-chevron" src="/images/chevron-right.svg" mode="aspectFit" />
+      </view>
+      <view class="service-item" bindtap="onTapService" data-type="process">
+        <image class="service-icon" src="/images/icon-process.svg" mode="aspectFit" />
+        <view class="service-text">
+          <text class="service-title">服务流程</text>
+          <text class="service-subtitle">了解咨询流程</text>
+        </view>
+        <image class="service-chevron" src="/images/chevron-right.svg" mode="aspectFit" />
+      </view>
+    </view>
+
+    <!-- 协议提示 + 介绍 -->
+    <view class="agreement-section">
+      <view class="agreement-card">
+        <view class="agreement-notice">
+          <image class="agreement-icon" src="/images/icon-info.svg" mode="aspectFit" />
+          <text class="agreement-text">预约前请先阅读《<text class="link" bindtap="onReadAgreement">咨询与预约协议</text>》</text>
+        </view>
+      </view>
+      <text class="intro-text">
+        <text class="intro-strong">The Ark Heart</text> 提供专业、温暖、保密的关爱咨询服务。在这里，你可以被理解、被支持、找到内心的力量。
+      </text>
+    </view>
+
+    <!-- 关于我们 -->
+    <view class="about-section">
+      <text class="about-title">关于我们</text>
+      <view class="about-flex">
+        <view class="about-text-side">
+          <text class="about-text">The Ark Heart 提供专业、温暖、保密的关爱咨询服务。在这里，你可以被理解、被支持、找到内心的力量。我们致力于以真诚和专业陪伴每一位来访者，走过内心的旅程。</text>
+        </view>
+        <view class="about-image-side">
+          <image class="about-img" src="/images/about.jpg" mode="aspectFill" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 预约流程 -->
+    <view class="flow-section">
+      <view class="flow-header">
+        <text class="flow-title">预约流程</text>
+        <text class="flow-subtitle">预约流程说明</text>
+      </view>
+      <view class="flow-steps">
+        <view class="flow-line-bg"></view>
+        <view class="flow-line-fill"></view>
+        <view class="flow-step" wx:for="{{flowSteps}}" wx:key="index">
+          <view class="flow-circle {{item.isFinal ? 'final' : ''}}">
+            <image class="flow-icon" src="{{item.icon}}" mode="aspectFit" />
+          </view>
+          <text class="flow-step-label {{item.isFinal ? 'final' : ''}}">{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部预约按钮 -->
+    <view class="bottom-cta">
+      <button class="btn-booking" bindtap="onGoBooking">立即预约</button>
+    </view>
+
+  </view>
+
+  <!-- TabBar -->
+  <tab-bar current="{{0}}" />
+</view>

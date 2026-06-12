@@ -1,0 +1,52 @@
+/* pages/reports/reports.wxss */
+.page { min-height: 100vh; background: var(--bg); padding-bottom: 110rpx; }
+.status-bar-placeholder { height: var(--status-bar-height, 44px); background: var(--bg); }
+
+.brand-header { display: flex; align-items: center; justify-content: space-between; padding: 0 40rpx; height: 88rpx; }
+.header-left { display: flex; align-items: center; gap: 16rpx; }
+.header-logo { width: 52rpx; height: 48rpx; }
+.header-title { font-size: 36rpx; font-weight: 600; color: var(--text-primary); }
+.header-menu { display: flex; flex-direction: column; gap: 6rpx; padding: 16rpx; margin-right: -16rpx; }
+.menu-dot { width: 8rpx; height: 8rpx; border-radius: 50%; background: var(--text-primary); }
+
+/* Banner */
+.reports-banner { width: 100%; height: 300rpx; position: relative; overflow: hidden; margin-bottom: 32rpx; }
+.banner-img { width: 100%; height: 100%; }
+.banner-overlay { position: absolute; left: 0; bottom: 0; padding: 32rpx 40rpx; z-index: 2; }
+.banner-title { font-size: 40rpx; font-weight: 700; color: var(--text-primary); display: block; }
+.banner-sub { font-size: 24rpx; color: var(--text-secondary); }
+
+/* 概览统计 */
+.rpt-section { padding: 0 32rpx; margin-bottom: 40rpx; }
+.rpt-section-title { font-size: 30rpx; font-weight: 600; color: var(--text-primary); margin-bottom: 24rpx; display: block; }
+.rpt-stats-row { display: flex; gap: 16rpx; }
+.rpt-stat-card {
+  flex: 1; background: #fff; border-radius: 24rpx; padding: 28rpx 16rpx;
+  display: flex; flex-direction: column; align-items: center; gap: 12rpx;
+  box-shadow: 0 2rpx 8rpx var(--shadow);
+}
+.stat-icon { width: 72rpx; height: 72rpx; border-radius: 20rpx; background: var(--green-light); display: flex; align-items: center; justify-content: center; }
+.stat-icon-img { width: 40rpx; height: 40rpx; }
+.stat-num { font-size: 40rpx; font-weight: 700; color: var(--text-primary); }
+.stat-label { font-size: 22rpx; color: var(--text-secondary); }
+
+/* 报告列表 */
+.rpt-list-header { display: flex; align-items: center; justify-content: space-between; padding: 0 8rpx; margin-bottom: 24rpx; }
+.rpt-list-title { font-size: 30rpx; font-weight: 600; color: var(--text-primary); }
+.rpt-list-filter { display: flex; align-items: center; gap: 8rpx; font-size: 24rpx; color: var(--text-tertiary); }
+.filter-arrow { width: 24rpx; height: 24rpx; }
+
+.rpt-entry { display: flex; background: #fff; border-radius: 24rpx; box-shadow: 0 2rpx 8rpx var(--shadow); margin-bottom: 20rpx; overflow: hidden; }
+.entry-thumb { width: 160rpx; min-height: 160rpx; flex-shrink: 0; }
+.entry-thumb-img { width: 100%; height: 100%; }
+.entry-body { flex: 1; padding: 24rpx; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+.entry-title { font-size: 26rpx; font-weight: 600; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 8rpx; }
+.entry-tag { display: inline-flex; font-size: 22rpx; padding: 2rpx 16rpx; border-radius: 8rpx; font-weight: 500; margin-bottom: 8rpx; width: fit-content; }
+.tag-gray { background: var(--badge-done-bg); color: var(--badge-done-text); }
+.tag-green { background: var(--badge-confirmed-bg); color: var(--badge-confirmed-text); }
+.entry-meta { font-size: 22rpx; color: var(--text-tertiary); }
+.entry-chevron { display: flex; align-items: center; padding: 0 20rpx; flex-shrink: 0; }
+.chevron-icon { width: 32rpx; height: 32rpx; opacity: 0.4; }
+
+.empty-state { display: flex; justify-content: center; padding: 80rpx 0; }
+.empty-text { font-size: 28rpx; color: var(--text-tertiary); }

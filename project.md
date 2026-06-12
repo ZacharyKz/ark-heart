@@ -30,40 +30,47 @@
 > 设计规范：[designs/design-tokens.md](./designs/design-tokens.md) · 页面：[designs/](./designs/)
 
 ### 设计方向
-[待阶段二确定]
+温暖治愈 · 鼠尾草绿调 · 毛玻璃卡片 · Noto Sans SC
+> 设计规范：[designs/design-tokens.md](./designs/design-tokens.md)
 
 ### 页面清单
 | 页面 | 等级 | HTML 位置 | 状态 |
 |------|------|----------|------|
-| 首页（咨询方向展示） | | designs/ | 待设计 |
-| 预约表单页 | | designs/ | 待设计 |
-| "我的"页面 | | designs/ | 待设计 |
-| 预约详情页 | | designs/ | 待设计 |
-| 后台登录页 | | designs/ | 待设计 |
-| 后台预约管理页 | | designs/ | 待设计 |
-| 后台统计看板页 | | designs/ | 待设计 |
+| 首页（咨询方向展示） | L2 | prototype-thearkheart.html | ✅ 已设计 |
+| 预约记录页 | L2 | prototype-thearkheart.html | ✅ 已设计 |
+| 我的报告页 | L2 | prototype-thearkheart.html | ✅ 已设计 |
+| 我的（个人中心） | L2 | prototype-thearkheart.html | ✅ 已设计 |
+| 预约表单页 | L2 | — | ⏳ 待设计 |
+| 后台登录页 | L1 | — | ⏳ 待设计 |
+| 后台预约管理页 | L2 | — | ⏳ 待设计 |
+| 后台统计看板页 | L2 | — | ⏳ 待设计 |
 
 ## 三、技术方案
 
-> ⚠️ 待阶段三确定
+### 项目标识
+- **小程序 AppID**: `wxbecc567e6f58bfd9`
+- **CloudBase 环境 ID**: `the-ark-heart-d9g2v024t5583b8a6`
 
-### 前端
-- **框架**: [待定]
-- **构建工具**: [待定]
-- **状态管理**: [待定]
-- **UI 库**: [待定]
+### 前端（微信小程序）
+- **框架**: 微信原生 (WXML + WXSS + JS)
+- **UI 组件**: 基于 design-tokens.md 手写组件
+- **图标**: SVG 内联图标
 
-### 后端
-- **运行时**: [待定]
-- **数据库**: [待定]
-- **缓存**: [待定]
-- **存储**: [待定]
+### 后端（CloudBase 云开发）
+- **云函数**: Node.js Serverless
+- **数据库**: CloudBase 文档数据库 (NoSQL)
+- **存储**: CloudBase 云存储
+- **认证**: CloudBase 微信授权登录
+
+### 管理后台
+- **框架**: Vue 3 + Vite
+- **部署**: CloudBase 静态托管
 
 ### 第三方服务
 | 服务 | 用途 | 配置 |
 |------|------|------|
-| 微信小程序 | 小程序运行环境 | AppID 待注册 |
-| 微信开放平台 | 授权登录 | 待配置 |
+| 微信小程序 | 小程序运行环境 | wxbecc567e6f58bfd9 |
+| CloudBase | 后端一体化 | the-ark-heart-d9g2v024t5583b8a6 |
 | 订阅消息 | 通知推送 | 待配置 |
 
 ### 可复用资产
@@ -88,8 +95,8 @@
 | 阶段 | 状态 | 完成日期 | 产出 |
 |------|------|---------|------|
 | 需求 | ✅ | 2026-06-12 | requirements.md |
-| 设计 | ⏳ | | page-*.html |
-| 技术定调 | ⏳ | | project.md 技术章节 |
+| 设计 | ✅ | 2026-06-12 | design-tokens.md |
+| 技术定调 | ✅ | 2026-06-12 | project.md 技术章节 |
 | 接口设计 | ⏳ | | 模块 md |
 | 开发 | ⏳ | | 代码 |
 | 测试 | ⏳ | | test-report.md |

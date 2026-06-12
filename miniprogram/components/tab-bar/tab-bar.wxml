@@ -1,0 +1,34 @@
+<!-- components/tab-bar/tab-bar.wxml -->
+<view class="tab-bar safe-area-bottom">
+  <view
+    wx:for="{{tabs}}"
+    wx:key="index"
+    class="tab-item {{current === index ? 'active' : ''}}"
+    data-index="{{index}}"
+    bindtap="onTabTap"
+  >
+    <view class="tab-icon">
+      <!-- 首页图标 -->
+      <block wx:if="{{index === 0}}">
+        <image wx:if="{{current === 0}}" src="/images/tab-home-active.svg" mode="aspectFit" class="icon" />
+        <image wx:else src="/images/tab-home.svg" mode="aspectFit" class="icon" />
+      </block>
+      <!-- 预约记录图标 -->
+      <block wx:elif="{{index === 1}}">
+        <image wx:if="{{current === 1}}" src="/images/tab-records-active.svg" mode="aspectFit" class="icon" />
+        <image wx:else src="/images/tab-records.svg" mode="aspectFit" class="icon" />
+      </block>
+      <!-- 我的报告图标 -->
+      <block wx:elif="{{index === 2}}">
+        <image wx:if="{{current === 2}}" src="/images/tab-reports-active.svg" mode="aspectFit" class="icon" />
+        <image wx:else src="/images/tab-reports.svg" mode="aspectFit" class="icon" />
+      </block>
+      <!-- 我的图标 -->
+      <block wx:elif="{{index === 3}}">
+        <image wx:if="{{current === 3}}" src="/images/tab-profile-active.svg" mode="aspectFit" class="icon" />
+        <image wx:else src="/images/tab-profile.svg" mode="aspectFit" class="icon" />
+      </block>
+    </view>
+    <text class="tab-label {{current === index ? 'active' : ''}}">{{item.text}}</text>
+  </view>
+</view>

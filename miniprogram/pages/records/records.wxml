@@ -1,0 +1,78 @@
+<!-- pages/records/records.wxml — 预约记录 -->
+<view class="page">
+  <view class="status-bar-placeholder"></view>
+
+  <!-- Header -->
+  <view class="brand-header">
+    <view class="header-left">
+      <image class="header-logo" src="/images/logo.svg" mode="aspectFit" />
+      <text class="header-title">The Ark Heart</text>
+    </view>
+    <view class="header-menu" bindtap="onMenuTap">
+      <view class="menu-dot"></view><view class="menu-dot"></view><view class="menu-dot"></view>
+    </view>
+  </view>
+
+  <text class="page-brand-title">The Ark Heart</text>
+  <text class="page-brand-subtitle">预约记录</text>
+
+  <!-- 筛选 Pills -->
+  <scroll-view class="filter-scroll" scroll-x enable-flex>
+    <view class="filter-pills">
+      <view
+        wx:for="{{filters}}"
+        wx:key="value"
+        class="filter-pill {{currentFilter === item.value ? 'active' : ''}}"
+        bindtap="onFilterChange"
+        data-value="{{item.value}}"
+      >{{item.label}}</view>
+    </view>
+  </scroll-view>
+
+  <!-- 预约列表 -->
+  <view class="card-list" wx:if="{{filteredRecords.length > 0}}">
+    <view
+      class="record-card"
+      wx:for="{{filteredRecords}}"
+      wx:key="_id"
+      bindtap="onTapRecord"
+      data-id="{{item._id}}"
+    >
+      <view class="card-thumb">
+        <image src="{{item.thumb || '/images/placeholder.svg'}}" mode="aspectFill" class="thumb-img" />
+      </view>
+      <view class="card-body">
+        <view class="card-top-row">
+          <text class="card-project">{{item.title}}</text>
+          <view class="card-badge badge-{{item.status}}">{{item.statusLabel}}</view>
+        </view>
+        <view class="card-info">
+          <view class="info-line">
+            <image src="/images/icon-calendar.svg" mode="aspectFit" class="info-icon" />
+            <text>{{item.dateText}}</text>
+          </view>
+          <view class="info-line">
+            <image src="/images/icon-location.svg" mode="aspectFit" class="info-icon" />
+            <text>{{item.location}}</text>
+          </view>
+          <view class="info-line">
+            <image src="/images/icon-person.svg" mode="aspectFit" class="info-icon" />
+            <text>咨询师：{{item.counselor}}</text>
+          </view>
+        </view>
+        <view class="card-bottom">
+          <text class="card-id">{{item.appointmentId}}</text>
+          <view class="card-btn">查看详情</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <image src="/images/empty-records.svg" mode="aspectFit" class="empty-img" />
+    <text class="empty-text">还没有预约记录</text>
+  </view>
+
+  <tab-bar current="{{1}}" />
+</view>

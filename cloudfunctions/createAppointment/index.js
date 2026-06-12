@@ -13,7 +13,8 @@ exports.main = async (event, context) => {
   }
 
   // ─── 2. 必填校验 ───
-  const required = { name, phone, wechat, gender, age, direction, description };
+  const required = { name, phone, gender, age, direction, description };
+  // 微信号可选
   const missing = Object.entries(required)
     .filter(([, v]) => !v)
     .map(([k]) => k);
@@ -32,7 +33,7 @@ exports.main = async (event, context) => {
   }
 
   // 方向枚举校验
-  const validDirections = ['love_marriage', 'parent_child', 'workplace', 'other'];
+  const validDirections = ['love_marriage', 'parent_child', 'workplace', 'personal_growth', 'other'];
   if (!validDirections.includes(direction)) {
     return { success: false, code: 400, message: '咨询方向无效' };
   }

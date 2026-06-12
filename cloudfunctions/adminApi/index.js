@@ -84,18 +84,19 @@ exports.main = async (event, context) => {
 
         // 发送订阅消息通知
         try {
-          await cloud.callFunction({
-            name: 'sendSubscribeMsg',
+          await cloud.openapi.subscribeMessage.send({
+            touser: appt.data._openid,
+            templateId: 'TWLsZQ3vYBhWycHcN0xN5Vd3YM5yf_p7EMRldqn3dm0',
+            page: '/pages/records/records',
             data: {
-              openid: appt.data._openid,
-              type: 'confirmed',
-              userName: appt.data.name,
-              dateText: dateText,
-              location: location
-            }
+              date3: { value: dateText || '已确认' },
+              name5: { value: appt.data.name || '来访者' },
+              thing2: { value: location || '已安排' }
+            },
+            miniprogramState: 'formal'
           });
         } catch (e) {
-          console.log('订阅消息发送失败(非致命):', e.message);
+          console.error('订阅消息失败:', e.message);
         }
 
         return { success: true, message: '预约已确认' };

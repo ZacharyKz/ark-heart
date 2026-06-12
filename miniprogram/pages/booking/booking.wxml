@@ -23,7 +23,7 @@
       </view>
       <!-- 微信号 -->
       <view class="form-group">
-        <text class="form-label">微信号<text class="required">*</text></text>
+        <text class="form-label">微信号</text>
         <input class="form-input" placeholder="请输入您的微信号" value="{{formData.wechat}}" bindinput="onInput" data-f="wechat" maxlength="40" />
       </view>
 

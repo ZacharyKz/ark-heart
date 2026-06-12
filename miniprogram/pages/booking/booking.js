@@ -14,7 +14,9 @@ Page({
     directionOptions: [
       { label: '爱情婚姻', value: 'love_marriage' },
       { label: '亲子互动', value: 'parent_child' },
-      { label: '职场人际', value: 'workplace' }
+      { label: '职场人际', value: 'workplace' },
+      { label: '个人成长', value: 'personal_growth' },
+      { label: '其他', value: 'other' }
     ],
     modeOptions: [
       { label: '线上', value: 'online' },
@@ -65,7 +67,7 @@ Page({
     if (!f.name.trim())      return wx.showToast({ title: '请输入姓名', icon: 'none' });
     if (!f.phone.trim())     return wx.showToast({ title: '请输入手机号', icon: 'none' });
     if (!/^1[3-9]\d{9}$/.test(f.phone)) return wx.showToast({ title: '手机号格式不正确', icon: 'none' });
-    if (!f.wechat.trim())    return wx.showToast({ title: '请输入微信号', icon: 'none' });
+    // 微信号可选
     if (!f.gender)           return wx.showToast({ title: '请选择性别', icon: 'none' });
     if (!f.age)              return wx.showToast({ title: '请选择年龄', icon: 'none' });
     if (!f.direction)        return wx.showToast({ title: '请选择咨询方向', icon: 'none' });

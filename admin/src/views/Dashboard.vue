@@ -81,6 +81,20 @@
         </form>
       </section>
     </main>
+
+    <!-- 确认预约弹窗 -->
+    <div v-if="showConfirm" class="modal-overlay" @click.self="showConfirm = false">
+      <div class="modal-card">
+        <h3>确认预约 — {{ confirmTarget?.name }}</h3>
+        <input v-model="confirmForm.counselor" class="input" placeholder="咨询师姓名" />
+        <input v-model="confirmForm.dateText" class="input" placeholder="预约时间 (如 6月15日 14:00)" />
+        <input v-model="confirmForm.location" class="input" placeholder="咨询地点 (如 腾讯会议/书香阁)" />
+        <div class="modal-btns">
+          <button class="btn btn-cancel" @click="showConfirm = false">取消</button>
+          <button class="btn" @click="doConfirm">确认预约</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -97,6 +111,9 @@ const showReportForm = ref(false);
 const reportTarget = ref(null);
 const reportTitle = ref('');
 const reportContent = ref('');
+const showConfirm = ref(false);
+const confirmTarget = ref(null);
+const confirmForm = ref({ counselor: '', dateText: '', location: '' });
 
 const tabs = [
   { key: 'appointments', label: '预约管理' },
@@ -157,19 +174,27 @@ async function loadStats() {
   if (res.success) Object.assign(stats, res.data);
 }
 
-async function confirmAppt(a) {
-  const counselor = prompt('咨询师姓名:', a.counselor || '');
-  if (counselor === null) return;
-  const dateText = prompt('预约时间 (如 6月15日 14:00):', a.dateText || '');
-  if (dateText === null) return;
-  const location = prompt('咨询地点 (如 腾讯会议/书香阁):', a.location || '');
-  if (location === null) return;
+function confirmAppt(a) {
+  confirmTarget.value = a;
+  confirmForm.value = { counselor: '', dateText: '', location: '' };
+  showConfirm.value = true;
+}
 
+async function doConfirm() {
+  const a = confirmTarget.value;
+  const f = confirmForm.value;
   const res = await callAdminApi('confirmAppointment', {
-    id: a._id, counselor, dateText, location
+    id: a._id,
+    counselor: f.counselor,
+    dateText: f.dateText,
+    location: f.location
   });
-  if (res.success) loadAppointments(currentFilter.value);
-  else alert(res.message);
+  if (res.success) {
+    showConfirm.value = false;
+    loadAppointments(currentFilter.value);
+  } else {
+    alert(res.message);
+  }
 }
 
 async function completeAppt(a) {
@@ -269,4 +294,15 @@ onMounted(() => {
 .input:focus, .textarea:focus { border-color: #6B9E7D; }
 .btn { padding: 10px 32px; background: #6B9E7D; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
 .btn:hover { background: #5A8A6C; }
+</style>
+<style scoped>
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; }
+.modal-card { background: #fff; border-radius: 16px; padding: 32px; width: 400px; max-width: 90vw; }
+.modal-card h3 { font-size: 18px; margin-bottom: 20px; color: #2D2D2D; }
+.modal-card .input { width: 100%; padding: 10px 14px; border: 1px solid #EDEDEB; border-radius: 8px; font-size: 14px; margin-bottom: 12px; outline: none; display: block; box-sizing: border-box; }
+.modal-card .input:focus { border-color: #6B9E7D; }
+.modal-btns { display: flex; gap: 12px; margin-top: 16px; }
+.modal-btns .btn { flex: 1; padding: 10px 0; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.modal-btns .btn-cancel { background: #F0EFEB; color: #666; }
 </style>

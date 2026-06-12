@@ -1,0 +1,39 @@
+<!-- pages/report-detail/report-detail.wxml -->
+<view class="page">
+  <view class="status-bar-placeholder"></view>
+  <view class="header-row">
+    <view class="back-btn" bindtap="onBack">
+      <image src="/images/chevron-left.svg" mode="aspectFit" class="back-icon" />
+    </view>
+    <text class="header-title">报告详情</text>
+    <view class="header-spacer"></view>
+  </view>
+
+  <view class="content-body" wx:if="{{report}}">
+    <view class="detail-card">
+      <text class="d-title">{{report.title}}</text>
+      <view class="d-tag tag-{{report.tagClass}}">{{report.tagText}}</view>
+      <text class="d-date">咨询报告 · {{report.dateText}}</text>
+
+      <view class="d-divider"></view>
+
+      <view class="d-section">
+        <text class="d-label">咨询方向</text>
+        <text class="d-value">{{report.directionText}}</text>
+      </view>
+
+      <view wx:if="{{report.content}}" class="d-section">
+        <text class="d-label">评估内容</text>
+        <text class="d-content">{{report.content}}</text>
+      </view>
+
+      <view wx:if="{{!report.content}}" class="d-empty">
+        <text>报告内容加载中...</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="loading-wrap">
+    <text>加载中...</text>
+  </view>
+</view>

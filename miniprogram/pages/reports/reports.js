@@ -37,7 +37,6 @@ Page({
         };
       });
 
-      // 更新统计
       const done = reports.filter(r => r.reportStatus === 'closed').length;
       const ongoing = reports.filter(r => r.reportStatus === 'ongoing').length;
 
@@ -59,7 +58,7 @@ Page({
 
   onTapReport(e) {
     const id = e.currentTarget.dataset.id;
-    wx.showToast({ title: '报告详情开发中', icon: 'none' });
+    wx.navigateTo({ url: '/pages/report-detail/report-detail?id=' + id });
   },
 
   onFilterTap() {

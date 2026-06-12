@@ -1,4 +1,6 @@
 // pages/booking/booking.js
+const app = getApp();
+
 Page({
   data: {
     formData: {
@@ -8,20 +10,17 @@ Page({
     ageIndex: -1,
     genderOptions: [
       { label: '男', value: 'male' },
-      { label: '女', value: 'female' },
-      { label: '不便透露', value: 'other' }
+      { label: '女', value: 'female' }
     ],
     ageOptions: [
       '18岁以下', '18-25岁', '26-35岁', '36-45岁', '46-55岁', '55岁以上'
     ],
     directionOptions: [
-      { label: '爱情婚姻', value: 'love_marriage', desc: '恋爱、婚姻关系困扰' },
-      { label: '亲子互动', value: 'parent_child', desc: '与孩子的沟通、教育困扰' },
-      { label: '职场人际', value: 'workplace', desc: '工作压力、人际关系困扰' },
-      { label: '其他', value: 'other', desc: '其他方面的困扰' }
+      { label: '爱情婚姻', value: 'love_marriage' },
+      { label: '亲子互动', value: 'parent_child' },
+      { label: '职场人际', value: 'workplace' }
     ],
     modeOptions: [
-      { label: '均可', value: 'both' },
       { label: '线上', value: 'online' },
       { label: '线下', value: 'offline' }
     ],
@@ -30,63 +29,64 @@ Page({
     canSubmit: false
   },
 
-  onLoad(options) { },
+  onLoad() { },
 
-  // 文本字段变化
   onFieldChange(e) {
     const field = e.currentTarget.dataset.field;
-    this.setData({ [`formData.${field}`]: e.detail.value }, () => this.checkCanSubmit());
+    this.setData({ [`formData.${field}`]: e.detail.value });
+    this.checkCanSubmit();
   },
 
-  // 性别选择
   onGenderChange(e) {
-    this.setData({ 'formData.gender': e.currentTarget.dataset.value }, () => this.checkCanSubmit());
+    this.setData({ 'formData.gender': e.currentTarget.dataset.value });
+    this.checkCanSubmit();
   },
 
-  // 年龄选择
   onAgeChange(e) {
-    const index = e.detail.value;
     this.setData({
-      'formData.age': this.data.ageOptions[index],
-      ageIndex: index
-    }, () => this.checkCanSubmit());
+      'formData.age': this.data.ageOptions[e.detail.value],
+      ageIndex: e.detail.value
+    });
+    this.checkCanSubmit();
   },
 
-  // 咨询方向选择
   onDirectionChange(e) {
-    this.setData({ 'formData.direction': e.currentTarget.dataset.value }, () => this.checkCanSubmit());
+    this.setData({ 'formData.direction': e.currentTarget.dataset.value });
+    this.checkCanSubmit();
   },
 
-  // 咨询方式选择
   onModeChange(e) {
-    this.setData({ 'formData.mode': e.currentTarget.dataset.value }, () => this.checkCanSubmit());
+    this.setData({ 'formData.mode': e.currentTarget.dataset.value });
+    this.checkCanSubmit();
   },
 
-  // 协议勾选
   onToggleAgreement() {
-    this.setData({ agreed: !this.data.agreed }, () => this.checkCanSubmit());
+    this.setData({ agreed: !this.data.agreed });
+    this.checkCanSubmit();
   },
 
-  // 阅读协议
   onReadAgreement(e) {
     if (e) e.stopPropagation();
     wx.showModal({ title: '咨询与预约协议', content: '协议内容将在后续版本中完善。', showCancel: false });
   },
 
-  // 检查是否可以提交
   checkCanSubmit() {
-    const { name, phone, wechat, gender, age, direction, description } = this.data.formData;
-    let can = !!(name && phone && wechat && gender && age && direction && description && this.data.agreed);
-    if (phone && !/^1[3-9]\d{9}$/.test(phone)) can = false;
-    this.setData({ canSubmit: can && !this.data.submitting });
+    // 延迟一帧确保 setData 已生效
+    setTimeout(() => {
+      const fd = this.data.formData;
+      const ok = fd.name.trim() && fd.phone.trim() && fd.wechat.trim()
+        && fd.gender && fd.age && fd.direction && fd.description.trim()
+        && fd.mode && this.data.agreed
+        && /^1[3-9]\d{9}$/.test(fd.phone);
+      this.setData({ canSubmit: ok && !this.data.submitting });
+    }, 50);
   },
 
-  // 提交 → 调用云函数
   async onSubmit() {
-    if (!this.data.agreed) { wx.showToast({ title: '请先阅读并同意协议', icon: 'none' }); return; }
+    if (!this.data.canSubmit) return;
     if (this.data.submitting) return;
 
-    this.setData({ submitting: true });
+    this.setData({ submitting: true, canSubmit: false });
     wx.showLoading({ title: '提交中...', mask: true });
 
     try {
@@ -97,6 +97,7 @@ Page({
 
       wx.hideLoading();
       this.setData({ submitting: false });
+      this.checkCanSubmit();
 
       if (res.result.success) {
         wx.showToast({ title: '预约已提交', icon: 'success', duration: 2000 });
@@ -107,6 +108,7 @@ Page({
     } catch (err) {
       wx.hideLoading();
       this.setData({ submitting: false });
+      this.checkCanSubmit();
       console.error('提交失败:', err);
       wx.showToast({ title: '网络异常，请重试', icon: 'none' });
     }

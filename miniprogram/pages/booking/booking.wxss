@@ -251,3 +251,8 @@
   display: block;
   line-height: 1.6;
 }
+
+/* 咨询方向大字居中 */
+.direction-item { justify-content: center !important; }
+.direction-label { font-size: 30rpx; font-weight: 600; }
+.direction-item.active .direction-label { color: var(--green-dark); }

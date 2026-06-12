@@ -8,7 +8,9 @@ const _ = db.command;
 const ADMIN_PASSWORD = 'ark2026admin';
 
 exports.main = async (event, context) => {
-  const { action, password } = event;
+  // 兼容 HTTP 网关（body 为字符串）和 SDK 直调（event 即参数）
+  const params = typeof event.body === 'string' ? JSON.parse(event.body) : event;
+  const { action, password } = params;
 
   // ─── 鉴权 ───
   if (password !== ADMIN_PASSWORD) {

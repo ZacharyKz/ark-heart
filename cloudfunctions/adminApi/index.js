@@ -173,6 +173,14 @@ exports.main = async (event, context) => {
         };
       }
 
+      // ─── 删除报告 ───
+      case 'deleteReport': {
+        const { id } = event;
+        if (!id) return { success: false, message: '缺少报告 ID' };
+        await db.collection('reports').doc(id).remove();
+        return { success: true, message: '报告已删除' };
+      }
+
       // ─── 报告列表 ───
       case 'listReports': {
         const list = await db.collection('reports')

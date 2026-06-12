@@ -88,7 +88,10 @@
                 <td>{{ r.counselor || '-' }}</td>
                 <td>{{ r.counselDate || '-' }}</td>
                 <td><span :class="'badge ' + (r.reportStatus === 'ongoing' ? 'badge-pending' : 'badge-done')">{{ r.reportStatus === 'ongoing' ? '进行中' : '已关闭' }}</span></td>
-                <td><button class="act-btn report" @click="viewReport(r)">查看</button></td>
+                <td>
+                  <button class="act-btn report" @click="viewReport(r)">查看</button>
+                  <button class="act-btn delete-btn" @click="deleteReport(r)">删除</button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -123,9 +126,20 @@
 
           <div class="rpt-field"><label>后续建议</label><textarea v-model="rpt.suggestion" class="textarea" rows="3" placeholder="咨询频率、方向建议、辅助练习..." /></div>
 
+          <!-- 已有图片展示 -->
+          <div class="rpt-field" v-if="rptImages.length > 0 || (reportTarget && reportTarget.images && reportTarget.images.length)">
+            <label>图片报告</label>
+            <div class="img-grid">
+              <div class="img-card" v-for="(url, i) in (reportTarget?.images || [])" :key="'old-'+i">
+                <img :src="url" @click="previewImage(url)" style="cursor:pointer" />
+              </div>
+            </div>
+          </div>
+
           <!-- 图片上传 -->
           <div class="rpt-field">
-            <label>图片报告（可选 — 上传图片后文字字段可不填）</label>
+            <label v-if="!reportTarget?._id">图片报告（可选 — 上传图片后文字字段可不填）</label>
+            <label v-else>追加图片</label>
             <input type="file" accept="image/*" multiple @change="onImagesPicked" ref="fileInput" style="display:none" />
             <div class="upload-dropzone" @click="$refs.fileInput.click()" @dragover.prevent @drop.prevent="onDropImages">
               <div class="upload-icon">📷</div>
@@ -314,7 +328,22 @@ function viewReport(r) {
     improvements: r.improvements || '',
     suggestion: r.suggestion || ''
   };
+  rptImages.value = [];
   showReportForm.value = true;
+}
+
+async function deleteReport(r) {
+  if (!confirm('确定删除报告「' + (r.title || '无标题') + '」？此操作不可撤销。')) return;
+  const res = await callAdminApi('deleteReport', { id: r._id });
+  if (res.success) {
+    loadReports();
+  } else {
+    alert(res.message);
+  }
+}
+
+function previewImage(url) {
+  window.open(url, '_blank');
 }
 
 function addImages(files) {
@@ -493,4 +522,9 @@ function switchTab(key) {
 .img-del { position: absolute; top: 2px; right: 2px; width: 22px; height: 22px; border-radius: 50%; background: rgba(0,0,0,0.6); color: #fff; border: none; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
 .img-add { display: flex; align-items: center; justify-content: center; cursor: pointer; background: #FAFAF8; }
 .add-icon { font-size: 28px; color: #C0C0C0; }
+</style>
+
+<style scoped>
+.delete-btn { background: #FEF2F2; color: #991B1B; margin-left: 6px; }
+.delete-btn:hover { background: #FEE2E2; }
 </style>

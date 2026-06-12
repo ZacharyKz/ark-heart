@@ -1,0 +1,142 @@
+// 云函数：adminApi — 管理员后台 API
+const cloud = require('wx-server-sdk');
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
+const db = cloud.database();
+const _ = db.command;
+
+// 管理员密码（生产环境应放环境变量）
+const ADMIN_PASSWORD = 'ark2026admin';
+
+exports.main = async (event, context) => {
+  const { action, password } = event;
+
+  // ─── 鉴权 ───
+  if (password !== ADMIN_PASSWORD) {
+    return { success: false, code: 401, message: '密码错误' };
+  }
+
+  try {
+    switch (action) {
+
+      // ─── 预约列表 ───
+      case 'listAppointments': {
+        const { status, page = 1, pageSize = 20 } = event;
+        const query = {};
+        if (status && status !== 'all') query.status = status;
+
+        const total = await db.collection('appointments').where(query).count();
+        const list = await db.collection('appointments')
+          .where(query)
+          .orderBy('createdAt', 'desc')
+          .skip((page - 1) * pageSize)
+          .limit(pageSize)
+          .get();
+
+        return {
+          success: true,
+          data: {
+            list: list.data,
+            total: total.total,
+            page,
+            pageSize
+          }
+        };
+      }
+
+      // ─── 确认预约 ───
+      case 'confirmAppointment': {
+        const { id, counselor, dateText, location } = event;
+        if (!id) return { success: false, message: '缺少预约 ID' };
+
+        await db.collection('appointments').doc(id).update({
+          data: {
+            status: 'confirmed',
+            counselor: counselor || '',
+            dateText: dateText || '',
+            location: location || '',
+            updatedAt: db.serverDate()
+          }
+        });
+
+        return { success: true, message: '预约已确认' };
+      }
+
+      // ─── 完成预约 ───
+      case 'completeAppointment': {
+        const { id } = event;
+        await db.collection('appointments').doc(id).update({
+          data: { status: 'done', updatedAt: db.serverDate() }
+        });
+        return { success: true, message: '已标记完成' };
+      }
+
+      // ─── 写报告 + 推送 ───
+      case 'createReport': {
+        const { appointmentId, title, content } = event;
+        if (!appointmentId || !title) {
+          return { success: false, message: '缺少必要字段' };
+        }
+
+        // 获取预约信息以拿到用户 openid
+        const appt = await db.collection('appointments').doc(appointmentId).get();
+        if (!appt.data) return { success: false, message: '预约不存在' };
+
+        await db.collection('reports').add({
+          data: {
+            appointmentId,
+            _openid: appt.data._openid,
+            title,
+            content: content || '',
+            reportStatus: 'ongoing',
+            createdAt: db.serverDate(),
+            updatedAt: db.serverDate()
+          }
+        });
+
+        return { success: true, message: '报告已创建并推送给用户' };
+      }
+
+      // ─── 统计看板 ───
+      case 'getStats': {
+        const total = await db.collection('appointments').count();
+        const pending = await db.collection('appointments').where({ status: 'pending' }).count();
+        const confirmed = await db.collection('appointments').where({ status: 'confirmed' }).count();
+        const done = await db.collection('appointments').where({ status: 'done' }).count();
+        const cancelled = await db.collection('appointments').where({ status: 'cancelled' }).count();
+
+        // 性别统计
+        const male = await db.collection('appointments').where({ gender: 'male' }).count();
+        const female = await db.collection('appointments').where({ gender: 'female' }).count();
+
+        // 方向统计
+        const directions = ['love_marriage', 'parent_child', 'workplace', 'other'];
+        const dirStats = {};
+        for (const d of directions) {
+          const c = await db.collection('appointments').where({ direction: d }).count();
+          dirStats[d] = c.total;
+        }
+
+        return {
+          success: true,
+          data: {
+            total: total.total,
+            pending: pending.total,
+            confirmed: confirmed.total,
+            done: done.total,
+            cancelled: cancelled.total,
+            male: male.total,
+            female: female.total,
+            otherGender: total.total - male.total - female.total,
+            directions: dirStats
+          }
+        };
+      }
+
+      default:
+        return { success: false, message: `未知操作: ${action}` };
+    }
+  } catch (err) {
+    console.error('adminApi error:', err);
+    return { success: false, code: 500, message: '服务器错误' };
+  }
+};

@@ -50,7 +50,7 @@
   "libVersion": "3.3.4",
   "appid": "wxbecc567e6f58bfd9",
   "projectname": "the-ark-heart",
-  "cloudfunctionRoot": "../cloudfunctions/",
+  "cloudfunctionRoot": "cloudfunctions/",
   "miniprogramRoot": "",
   "condition": {},
   "editorSetting": {

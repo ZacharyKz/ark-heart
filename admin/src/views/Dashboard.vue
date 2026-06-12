@@ -73,10 +73,31 @@
 
       <!-- 报告 -->
       <section v-if="activeTab === 'reports'" class="reports">
-        <form v-if="showReportForm" class="report-form card" @submit.prevent="submitReport">
-          <h3>写报告 — {{ reportTarget?.name }}</h3>
-          <input v-model="reportTitle" class="input" placeholder="报告标题" required />
-          <textarea v-model="reportContent" class="textarea" placeholder="报告内容" rows="5" required></textarea>
+        <form v-if="showReportForm" class="report-form-full card" @submit.prevent="submitReport">
+          <h3>心理咨询个案报告 — {{ reportTarget?.name }}</h3>
+
+          <div class="rpt-row">
+            <div class="rpt-field"><label>报告标题</label><input v-model="rpt.title" class="input" placeholder="心理咨询个案报告" /></div>
+            <div class="rpt-field"><label>咨询师</label><input v-model="rpt.counselor" class="input" placeholder="咨询师姓名" /></div>
+          </div>
+          <div class="rpt-row rpt-row-3">
+            <div class="rpt-field"><label>咨询日期</label><input v-model="rpt.counselDate" type="date" class="input" /></div>
+            <div class="rpt-field"><label>咨询时长</label><input v-model="rpt.duration" class="input" placeholder="50分钟" /></div>
+            <div class="rpt-field"><label>咨询方式</label>
+              <select v-model="rpt.method" class="input"><option value="">选择</option><option>面谈</option><option>视频</option><option>语音</option></select>
+            </div>
+          </div>
+
+          <div class="rpt-field"><label>来访者基本信息</label><input v-model="rpt.clientInfo" class="input" placeholder="如：小林（化名），女，26岁，互联网公司产品运营" /></div>
+
+          <div class="rpt-field"><label>主诉问题</label><textarea v-model="rpt.complaint" class="textarea" rows="4" placeholder="来访者自述的主要困扰和症状..." /></div>
+
+          <div class="rpt-field"><label>咨询过程概述</label><textarea v-model="rpt.process" class="textarea" rows="5" placeholder="咨询初期...咨询中段...咨询后段..." /></div>
+
+          <div class="rpt-field"><label>咨询师观察与评估</label><textarea v-model="rpt.assessment" class="textarea" rows="4" placeholder="精神状态、思维能力、风险评估、问题范畴..." /></div>
+
+          <div class="rpt-field"><label>后续建议</label><textarea v-model="rpt.suggestion" class="textarea" rows="3" placeholder="咨询频率、方向建议、辅助练习..." /></div>
+
           <button type="submit" class="btn">提交报告</button>
         </form>
       </section>
@@ -109,8 +130,11 @@ const currentFilter = ref('all');
 const appointments = ref([]);
 const showReportForm = ref(false);
 const reportTarget = ref(null);
-const reportTitle = ref('');
-const reportContent = ref('');
+const rpt = ref({
+  title: '心理咨询个案报告', counselor: '', counselDate: '',
+  duration: '50分钟', method: '', clientInfo: '',
+  complaint: '', process: '', assessment: '', suggestion: ''
+});
 const showConfirm = ref(false);
 const confirmTarget = ref(null);
 const confirmForm = ref({ counselor: '', dateText: '', location: '' });
@@ -205,6 +229,18 @@ async function completeAppt(a) {
 
 function showReport(a) {
   reportTarget.value = a;
+  rpt.value = {
+    title: '心理咨询个案报告',
+    counselor: a.counselor || '',
+    counselDate: new Date().toISOString().split('T')[0],
+    duration: '50分钟',
+    method: a.mode === 'online' ? '视频' : '面谈',
+    clientInfo: '',
+    complaint: '',
+    process: '',
+    assessment: '',
+    suggestion: ''
+  };
   showReportForm.value = true;
   activeTab.value = 'reports';
 }
@@ -212,14 +248,11 @@ function showReport(a) {
 async function submitReport() {
   const res = await callAdminApi('createReport', {
     appointmentId: reportTarget.value._id,
-    title: reportTitle.value,
-    content: reportContent.value
+    ...rpt.value
   });
   if (res.success) {
-    alert('报告已创建并推送给用户');
+    alert('报告已创建');
     showReportForm.value = false;
-    reportTitle.value = '';
-    reportContent.value = '';
   } else {
     alert(res.message);
   }
@@ -305,4 +338,19 @@ onMounted(() => {
 .modal-btns { display: flex; gap: 12px; margin-top: 16px; }
 .modal-btns .btn { flex: 1; padding: 10px 0; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
 .modal-btns .btn-cancel { background: #F0EFEB; color: #666; }
+</style>
+
+<style scoped>
+/* Report form */
+.report-form-full { padding: 32px; max-width: 800px; margin-top: 16px; }
+.report-form-full h3 { margin-bottom: 24px; font-size: 18px; color: #2D2D2D; }
+.rpt-row { display: flex; gap: 16px; margin-bottom: 12px; }
+.rpt-row-3 .rpt-field { flex: 1; }
+.rpt-field { flex: 1; margin-bottom: 16px; }
+.rpt-field label { display: block; font-size: 13px; color: #666; margin-bottom: 4px; font-weight: 500; }
+.rpt-field .input, .rpt-field .textarea { width: 100%; padding: 8px 12px; border: 1px solid #EDEDEB; border-radius: 8px; font-size: 13px; outline: none; box-sizing: border-box; }
+.rpt-field .input:focus, .rpt-field .textarea:focus { border-color: #6B9E7D; }
+.rpt-field .textarea { resize: vertical; }
+.btn { padding: 12px 40px; background: #6B9E7D; color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; }
+.btn:hover { background: #5A8A6C; }
 </style>

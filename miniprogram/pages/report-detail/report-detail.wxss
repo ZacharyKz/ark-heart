@@ -1,4 +1,4 @@
-/* pages/report-detail/report-detail.wxss */
+/* 专业报告排版 */
 .page { min-height: 100vh; background: var(--bg); padding-bottom: 48rpx; }
 .status-bar-placeholder { height: var(--status-bar-height, 44px); background: var(--bg); }
 
@@ -10,23 +10,26 @@
 
 .content-body { padding: 0 32rpx 48rpx; }
 
-.detail-card { background: #fff; border-radius: 28rpx; box-shadow: 0 4rpx 24rpx var(--shadow); padding: 40rpx 32rpx; }
+/* 报告头部 */
+.rpt-header { background: #fff; border-radius: 28rpx; padding: 40rpx 32rpx; margin-bottom: 20rpx; box-shadow: 0 2rpx 12rpx var(--shadow); }
+.rpt-main-title { font-size: 38rpx; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 20rpx; text-align: center; }
+.rpt-meta { display: flex; flex-wrap: wrap; gap: 12rpx 24rpx; margin-bottom: 12rpx; }
+.rpt-no { font-size: 24rpx; color: var(--text-tertiary); }
+.rpt-date { font-size: 24rpx; color: var(--text-secondary); }
+.rpt-duration { font-size: 24rpx; color: var(--text-secondary); }
+.rpt-method { font-size: 24rpx; color: var(--text-secondary); }
+.rpt-counselor { font-size: 26rpx; color: var(--text-primary); font-weight: 500; display: block; }
+.rpt-divider { height: 1rpx; background: var(--border); margin: 12rpx 0; }
 
-.d-title { font-size: 36rpx; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 12rpx; }
+/* 报告章节 */
+.rpt-section { background: #fff; border-radius: 24rpx; padding: 32rpx; margin-bottom: 20rpx; box-shadow: 0 2rpx 8rpx var(--shadow); }
+.rpt-section-title { font-size: 30rpx; font-weight: 700; color: var(--green-dark); display: block; margin-bottom: 20rpx; padding-bottom: 16rpx; border-bottom: 2rpx solid var(--green-light); }
+.rpt-text { font-size: 28rpx; color: var(--text-primary); line-height: 1.9; white-space: pre-wrap; }
 
-.d-tag { display: inline-block; font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 8rpx; font-weight: 500; margin-bottom: 8rpx; }
-.tag-gray { background: var(--badge-done-bg); color: var(--badge-done-text); }
-.tag-green { background: var(--badge-confirmed-bg); color: var(--badge-confirmed-text); }
-
-.d-date { font-size: 24rpx; color: var(--text-tertiary); display: block; }
-
-.d-divider { height: 1rpx; background: var(--border); margin: 32rpx 0; }
-
-.d-section { margin-bottom: 28rpx; }
-.d-label { font-size: 26rpx; color: var(--text-secondary); display: block; margin-bottom: 8rpx; }
-.d-value { font-size: 30rpx; color: var(--text-primary); font-weight: 500; }
-.d-content { font-size: 28rpx; color: var(--text-primary); line-height: 1.8; white-space: pre-wrap; }
-
-.d-empty { text-align: center; padding: 60rpx 0; color: var(--text-tertiary); font-size: 28rpx; }
+/* 报告尾部 */
+.rpt-footer { padding: 20rpx 32rpx 40rpx; }
+.rpt-footer .rpt-divider { margin-bottom: 20rpx; }
+.rpt-footer-text { font-size: 24rpx; color: var(--text-secondary); display: block; margin-bottom: 8rpx; }
+.rpt-footer-note { font-size: 22rpx; color: var(--text-tertiary); font-style: italic; margin-top: 20rpx; display: block; }
 
 .loading-wrap { text-align: center; padding-top: 200rpx; color: var(--text-tertiary); }

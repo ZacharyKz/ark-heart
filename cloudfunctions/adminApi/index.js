@@ -96,21 +96,36 @@ exports.main = async (event, context) => {
 
       // ─── 写报告 + 推送 ───
       case 'createReport': {
-        const { appointmentId, title, content } = event;
+        const { appointmentId, title } = event;
         if (!appointmentId || !title) {
           return { success: false, message: '缺少必要字段' };
         }
 
-        // 获取预约信息以拿到用户 openid
         const appt = await db.collection('appointments').doc(appointmentId).get();
         if (!appt.data) return { success: false, message: '预约不存在' };
+
+        // 生成报告编号: 年月日-RC序号
+        const today = new Date();
+        const dateStr = `${today.getFullYear()}${String(today.getMonth()+1).padStart(2,'0')}${String(today.getDate()).padStart(2,'0')}`;
+        const count = await db.collection('reports').count();
+        const reportNo = `${dateStr}-RC${String(count.total + 1).padStart(2,'0')}`;
 
         await db.collection('reports').add({
           data: {
             appointmentId,
             _openid: appt.data._openid,
+            reportNo,
             title,
-            content: content || '',
+            counselor: event.counselor || '',
+            counselDate: event.counselDate || '',
+            duration: event.duration || '',
+            method: event.method || '',
+            clientInfo: event.clientInfo || '',
+            complaint: event.complaint || '',
+            process: event.process || '',
+            assessment: event.assessment || '',
+            suggestion: event.suggestion || '',
+            content: event.content || '',
             reportStatus: 'ongoing',
             createdAt: db.serverDate(),
             updatedAt: db.serverDate()

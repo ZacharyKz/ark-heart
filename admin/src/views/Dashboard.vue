@@ -133,8 +133,8 @@
           <div class="rpt-field" v-if="rptImages.length > 0 || (reportTarget && reportTarget.images && reportTarget.images.length)">
             <label>图片报告</label>
             <div class="img-grid">
-              <div class="img-card" v-for="(url, i) in (reportTarget?.images || [])" :key="'old-'+i">
-                <img :src="url" @click="previewImage(url)" style="cursor:pointer" />
+              <div class="img-card" v-for="(img, i) in (reportTarget?.images || [])" :key="'old-'+i">
+                <img :src="img.url || img" @click="previewImage(img.url || img)" style="cursor:pointer" />
               </div>
             </div>
           </div>
@@ -346,7 +346,9 @@ async function deleteReport(r) {
 }
 
 function previewImage(url) {
-  window.open(url, '_blank');
+  // url 可能是 { fileID, url } 对象或纯字符串
+  const imgUrl = typeof url === 'object' ? (url.url || url.fileID) : url;
+  window.open(imgUrl, '_blank');
 }
 
 function addImages(files) {

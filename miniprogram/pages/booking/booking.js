@@ -25,10 +25,10 @@ Page({
     submitting: false
   },
 
-  // 有变化就刷新按钮状态
-  refresh() {
+  // 检查表单完整性
+  check() {
     const f = this.data.formData;
-    const ok = (
+    const ok = !!(
       f.name.trim() && f.phone.trim() && f.wechat.trim() &&
       f.gender && f.age && f.direction && f.description.trim() &&
       f.mode && this.data.agreed &&
@@ -39,48 +39,59 @@ Page({
     }
   },
 
-  onFieldChange(e) {
-    const field = e.currentTarget.dataset.field;
-    this.data.formData[field] = e.detail.value;
-    this.refresh();
+  // 文本输入
+  onInput(e) {
+    const f = e.currentTarget.dataset.f;
+    this.setData({ [`formData.${f}`]: e.detail.value });
+    this.check();
   },
 
-  // 通用 radio 选择
-  onRadioTap(e) {
-    const field = e.currentTarget.dataset.field;
-    const value = e.currentTarget.dataset.value;
-    if (!field || value === undefined) return;
-    // 更新 data 中的 formData
-    this.data.formData[field] = value;
-    this.setData({ [`formData.${field}`]: value });
-    this.refresh();
+  // 性别
+  tapGender(e) {
+    const v = e.currentTarget.dataset.v;
+    this.setData({ 'formData.gender': v });
+    this.check();
   },
 
+  // 方向
+  tapDirection(e) {
+    const v = e.currentTarget.dataset.v;
+    this.setData({ 'formData.direction': v });
+    this.check();
+  },
+
+  // 方式
+  tapMode(e) {
+    const v = e.currentTarget.dataset.v;
+    this.setData({ 'formData.mode': v });
+    this.check();
+  },
+
+  // 年龄 picker
   onAgeChange(e) {
-    const idx = parseInt(e.detail.value);
-    this.data.formData.age = this.data.ageOptions[idx];
+    const idx = e.detail.value;
     this.setData({
       'formData.age': this.data.ageOptions[idx],
       ageIndex: idx
     });
-    this.refresh();
+    this.check();
   },
 
-  onToggleAgreement() {
+  // 协议
+  tapAgree() {
     this.setData({ agreed: !this.data.agreed });
-    this.data.agreed = !this.data.agreed;
-    this.refresh();
+    this.check();
   },
 
-  onReadAgreement() {
+  readAgreement() {
     wx.showModal({ title: '咨询与预约协议', content: '协议内容将在后续版本中完善。', showCancel: false });
   },
 
+  // 提交
   async onSubmit() {
     const f = this.data.formData;
-
     if (!f.name.trim()) return wx.showToast({ title: '请输入姓名', icon: 'none' });
-    if (!f.phone.trim() || !/^1[3-9]\d{9}$/.test(f.phone)) return wx.showToast({ title: '手机号格式不正确', icon: 'none' });
+    if (!/^1[3-9]\d{9}$/.test(f.phone)) return wx.showToast({ title: '手机号格式不正确', icon: 'none' });
     if (!f.wechat.trim()) return wx.showToast({ title: '请输入微信号', icon: 'none' });
     if (!f.gender) return wx.showToast({ title: '请选择性别', icon: 'none' });
     if (!f.age) return wx.showToast({ title: '请选择年龄', icon: 'none' });
@@ -92,7 +103,6 @@ Page({
 
     this.setData({ submitting: true, canSubmit: false });
     wx.showLoading({ title: '提交中...', mask: true });
-
     try {
       const res = await wx.cloud.callFunction({ name: 'createAppointment', data: f });
       wx.hideLoading();
@@ -101,13 +111,13 @@ Page({
         setTimeout(() => wx.switchTab({ url: '/pages/home/home' }), 1500);
       } else {
         this.setData({ submitting: false });
-        this.refresh();
+        this.check();
         wx.showToast({ title: res.result.message || '提交失败', icon: 'none' });
       }
     } catch (err) {
       wx.hideLoading();
       this.setData({ submitting: false });
-      this.refresh();
+      this.check();
       wx.showToast({ title: '网络异常，请重试', icon: 'none' });
     }
   },

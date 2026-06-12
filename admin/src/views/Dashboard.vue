@@ -101,9 +101,9 @@
         <!-- 报告表单 -->
         <form v-if="showReportForm" class="report-form-full card" @submit.prevent="submitReport">
           <div class="form-top-bar">
-            <button type="button" class="btn-back" @click="showReportForm = false">&larr; 返回报告管理</button>
+            <h3>关系咨询个案报告 — {{ reportTarget?.name }}</h3>
+            <button type="button" class="btn-back" @click="showReportForm = false">← 返回报告管理</button>
           </div>
-          <h3>关系咨询个案报告 — {{ reportTarget?.name }}</h3>
 
           <div class="rpt-row">
             <div class="rpt-field"><label>报告标题</label><input v-model="rpt.title" class="input" placeholder="关系咨询个案报告" /></div>
@@ -535,5 +535,12 @@ function switchTab(key) {
 <style scoped>
 .form-top-bar { margin-bottom: 16px; }
 .btn-back { background: none; border: 1px solid #EDEDEB; padding: 6px 16px; border-radius: 8px; font-size: 13px; color: #666; cursor: pointer; }
+.btn-back:hover { border-color: #6B9E7D; color: #6B9E7D; }
+</style>
+
+<style scoped>
+.form-top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.form-top-bar h3 { margin: 0; font-size: 18px; color: #2D2D2D; }
+.btn-back { background: none; border: 1px solid #D0D0D0; padding: 6px 18px; border-radius: 8px; font-size: 14px; color: #666; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
 .btn-back:hover { border-color: #6B9E7D; color: #6B9E7D; }
 </style>

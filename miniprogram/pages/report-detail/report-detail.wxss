@@ -37,3 +37,7 @@
 .rpt-footer-note { font-size: 22rpx; color: var(--text-tertiary); font-style: italic; margin-top: 20rpx; display: block; }
 
 .loading-wrap { text-align: center; padding-top: 200rpx; color: var(--text-tertiary); }
+
+/* 底部返回按钮 */
+.back-bottom { display: flex; align-items: center; justify-content: center; gap: 8rpx; padding: 24rpx; margin-bottom: 20rpx; background: #fff; border-radius: 24rpx; box-shadow: 0 2rpx 8rpx var(--shadow); font-size: 28rpx; color: var(--green); font-weight: 500; }
+.back-bottom-icon { width: 36rpx; height: 36rpx; }

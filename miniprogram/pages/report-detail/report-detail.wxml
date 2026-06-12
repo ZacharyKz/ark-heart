@@ -75,6 +75,10 @@
 
     <!-- 尾部 -->
     <view class="rpt-footer">
+      <view class="back-bottom" bindtap="onBack">
+        <image src="/images/chevron-left.svg" mode="aspectFit" class="back-bottom-icon" />
+        <text>返回报告列表</text>
+      </view>
       <view class="rpt-divider"></view>
       <text class="rpt-footer-text" wx:if="{{report.counselor}}">报告撰写：{{report.counselor}}</text>
       <text class="rpt-footer-text">撰写日期：{{report.dateText || '-'}}</text>

@@ -100,6 +100,9 @@
 
         <!-- 报告表单 -->
         <form v-if="showReportForm" class="report-form-full card" @submit.prevent="submitReport">
+          <div class="form-top-bar">
+            <button type="button" class="btn-back" @click="showReportForm = false">&larr; 返回报告管理</button>
+          </div>
           <h3>关系咨询个案报告 — {{ reportTarget?.name }}</h3>
 
           <div class="rpt-row">
@@ -527,4 +530,10 @@ function switchTab(key) {
 <style scoped>
 .delete-btn { background: #FEF2F2; color: #991B1B; margin-left: 6px; }
 .delete-btn:hover { background: #FEE2E2; }
+</style>
+
+<style scoped>
+.form-top-bar { margin-bottom: 16px; }
+.btn-back { background: none; border: 1px solid #EDEDEB; padding: 6px 16px; border-radius: 8px; font-size: 13px; color: #666; cursor: pointer; }
+.btn-back:hover { border-color: #6B9E7D; color: #6B9E7D; }
 </style>

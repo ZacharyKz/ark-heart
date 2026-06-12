@@ -25,7 +25,7 @@ Page({
     submitting: false
   },
 
-  // 任意字段变化后刷新 canSubmit
+  // 有变化就刷新按钮状态
   refresh() {
     const f = this.data.formData;
     const ok = (
@@ -34,43 +34,48 @@ Page({
       f.mode && this.data.agreed &&
       /^1[3-9]\d{9}$/.test(f.phone)
     );
-    this.setData({ canSubmit: ok && !this.data.submitting });
+    if (ok !== this.data.canSubmit) {
+      this.setData({ canSubmit: ok });
+    }
   },
 
   onFieldChange(e) {
     const field = e.currentTarget.dataset.field;
-    this.setData({ [`formData.${field}`]: e.detail.value }, () => this.refresh());
+    this.data.formData[field] = e.detail.value;
+    this.refresh();
   },
 
-  onGenderChange(e) {
-    this.setData({ 'formData.gender': e.currentTarget.dataset.value }, () => this.refresh());
+  // 通用 radio 选择
+  onRadioTap(e) {
+    const field = e.currentTarget.dataset.field;
+    const value = e.currentTarget.dataset.value;
+    if (!field || value === undefined) return;
+    // 更新 data 中的 formData
+    this.data.formData[field] = value;
+    this.setData({ [`formData.${field}`]: value });
+    this.refresh();
   },
 
   onAgeChange(e) {
     const idx = parseInt(e.detail.value);
+    this.data.formData.age = this.data.ageOptions[idx];
     this.setData({
       'formData.age': this.data.ageOptions[idx],
       ageIndex: idx
-    }, () => this.refresh());
-  },
-
-  onDirectionChange(e) {
-    this.setData({ 'formData.direction': e.currentTarget.dataset.value }, () => this.refresh());
-  },
-
-  onModeChange(e) {
-    this.setData({ 'formData.mode': e.currentTarget.dataset.value }, () => this.refresh());
+    });
+    this.refresh();
   },
 
   onToggleAgreement() {
-    this.setData({ agreed: !this.data.agreed }, () => this.refresh());
+    this.setData({ agreed: !this.data.agreed });
+    this.data.agreed = !this.data.agreed;
+    this.refresh();
   },
 
   onReadAgreement() {
     wx.showModal({ title: '咨询与预约协议', content: '协议内容将在后续版本中完善。', showCancel: false });
   },
 
-  // 不使用 canSubmit 做前置校验，直接在 onSubmit 里手动校验
   async onSubmit() {
     const f = this.data.formData;
 
@@ -85,25 +90,24 @@ Page({
     if (!this.data.agreed) return wx.showToast({ title: '请阅读并同意协议', icon: 'none' });
     if (this.data.submitting) return;
 
-    this.setData({ submitting: true });
+    this.setData({ submitting: true, canSubmit: false });
     wx.showLoading({ title: '提交中...', mask: true });
 
     try {
-      const res = await wx.cloud.callFunction({
-        name: 'createAppointment',
-        data: f
-      });
+      const res = await wx.cloud.callFunction({ name: 'createAppointment', data: f });
       wx.hideLoading();
       if (res.result.success) {
         wx.showToast({ title: '预约已提交', icon: 'success' });
         setTimeout(() => wx.switchTab({ url: '/pages/home/home' }), 1500);
       } else {
-        this.setData({ submitting: false, canSubmit: true });
+        this.setData({ submitting: false });
+        this.refresh();
         wx.showToast({ title: res.result.message || '提交失败', icon: 'none' });
       }
     } catch (err) {
       wx.hideLoading();
       this.setData({ submitting: false });
+      this.refresh();
       wx.showToast({ title: '网络异常，请重试', icon: 'none' });
     }
   },

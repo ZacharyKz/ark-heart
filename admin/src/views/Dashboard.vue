@@ -102,17 +102,20 @@
 
           <!-- 图片上传 -->
           <div class="rpt-field">
-            <label>图片报告（可选）</label>
-            <div class="img-upload-area">
-              <input type="file" accept="image/*" multiple @change="onImagesPicked" ref="fileInput" style="display:none" />
-              <button type="button" class="btn-upload" @click="$refs.fileInput.click()">选择图片</button>
-              <span class="upload-hint" v-if="rptImages.length === 0">可上传其他软件生成的报告图片</span>
-              <div class="img-preview-row" v-if="rptImages.length > 0">
-                <div class="img-preview" v-for="(img, i) in rptImages" :key="i">
-                  <img :src="img.preview" />
-                  <button type="button" class="img-remove" @click="rptImages.splice(i, 1)">&times;</button>
-                  <span class="img-status">{{ img.uploaded ? '已上传' : '待上传' }}</span>
-                </div>
+            <label>图片报告（可选 — 上传图片后文字字段可不填）</label>
+            <input type="file" accept="image/*" multiple @change="onImagesPicked" ref="fileInput" style="display:none" />
+            <div class="upload-dropzone" @click="$refs.fileInput.click()" @dragover.prevent @drop.prevent="onDropImages">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text">点击或拖拽图片到此处</div>
+              <div class="upload-sub">支持 JPG/PNG，可多张</div>
+            </div>
+            <div class="img-grid" v-if="rptImages.length > 0">
+              <div class="img-card" v-for="(img, i) in rptImages" :key="i">
+                <img :src="img.preview" />
+                <button type="button" class="img-del" @click="rptImages.splice(i, 1)">✕</button>
+              </div>
+              <div class="img-card img-add" @click="$refs.fileInput.click()">
+                <div class="add-icon">+</div>
               </div>
             </div>
           </div>
@@ -267,20 +270,36 @@ function showReport(a) {
   activeTab.value = 'reports';
 }
 
-function onImagesPicked(e) {
-  const files = Array.from(e.target.files);
-  files.forEach(f => {
+function addImages(files) {
+  Array.from(files).forEach(f => {
+    if (!f.type.startsWith('image/')) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
       rptImages.value.push({ file: f, preview: ev.target.result, uploaded: false });
     };
     reader.readAsDataURL(f);
   });
+}
+
+function onImagesPicked(e) {
+  addImages(e.target.files);
   e.target.value = '';
 }
 
+function onDropImages(e) {
+  addImages(e.dataTransfer.files);
+}
+
 async function submitReport() {
-  // 先上传所有图片
+  // 校验：必须上传图片或填写文字内容
+  const hasImages = rptImages.value.length > 0;
+  const hasText = rpt.value.complaint || rpt.value.process || rpt.value.strengths || rpt.value.improvements;
+  if (!hasImages && !hasText) {
+    alert('请填写报告文字内容，或上传图片报告（二选一）');
+    return;
+  }
+
+  // 上传图片
   const uploadedUrls = [];
   for (const img of rptImages.value) {
     if (!img.uploaded && img.file) {
@@ -403,4 +422,19 @@ onMounted(() => {
 .rpt-field .textarea { resize: vertical; }
 .btn { padding: 12px 40px; background: #6B9E7D; color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; }
 .btn:hover { background: #5A8A6C; }
+</style>
+
+<style scoped>
+/* Upload */
+.upload-dropzone { border: 2px dashed #D0D0D0; border-radius: 12px; padding: 32px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+.upload-dropzone:hover { border-color: #6B9E7D; background: rgba(107,158,125,0.03); }
+.upload-icon { font-size: 36px; margin-bottom: 8px; }
+.upload-text { font-size: 14px; color: #666; }
+.upload-sub { font-size: 12px; color: #999; margin-top: 4px; }
+.img-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.img-card { width: 100px; height: 100px; border-radius: 10px; overflow: hidden; position: relative; border: 1px solid #EDEDEB; }
+.img-card img { width: 100%; height: 100%; object-fit: cover; }
+.img-del { position: absolute; top: 2px; right: 2px; width: 22px; height: 22px; border-radius: 50%; background: rgba(0,0,0,0.6); color: #fff; border: none; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
+.img-add { display: flex; align-items: center; justify-content: center; cursor: pointer; background: #FAFAF8; }
+.add-icon { font-size: 28px; color: #C0C0C0; }
 </style>

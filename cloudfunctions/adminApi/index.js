@@ -82,6 +82,22 @@ exports.main = async (event, context) => {
           }
         });
 
+        // 发送订阅消息通知
+        try {
+          await cloud.callFunction({
+            name: 'sendSubscribeMsg',
+            data: {
+              openid: appt.data._openid,
+              type: 'confirmed',
+              dateText: dateText,
+              counselor: counselor,
+              location: location
+            }
+          });
+        } catch (e) {
+          console.log('订阅消息发送失败(非致命):', e.message);
+        }
+
         return { success: true, message: '预约已确认' };
       }
 

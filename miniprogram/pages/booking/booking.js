@@ -81,7 +81,12 @@ Page({
       wx.hideLoading();
       if (res.result.success) {
         wx.showToast({ title: '预约已提交', icon: 'success' });
-        setTimeout(() => wx.switchTab({ url: '/pages/home/home' }), 1500);
+        // 提示订阅消息
+        wx.requestSubscribeMessage({
+          tmplIds: ['YOUR_TEMPLATE_ID_HERE'],
+          success: () => console.log('订阅提示已弹出'),
+          complete: () => setTimeout(() => wx.switchTab({ url: '/pages/home/home' }), 1000)
+        });
       } else {
         this.setData({ submitting: false });
         wx.showToast({ title: res.result.message || '提交失败', icon: 'none' });

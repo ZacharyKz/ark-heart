@@ -22,11 +22,12 @@ export async function callAdminApi(action, params = {}) {
   const password = localStorage.getItem('admin_password') || '';
   try {
     await ensureAuth();
+    // CloudBase SDK v2: callFunction({ name, data })
     const res = await app.callFunction({
       name: 'adminApi',
       data: { action, password, ...params }
     });
-    return res.result;
+    return res?.result || res;
   } catch (err) {
     console.error('API error:', err);
     const msg = typeof err === 'string' ? err : (err.message || err.code || JSON.stringify(err));

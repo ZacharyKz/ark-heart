@@ -8,9 +8,31 @@ const _ = db.command;
 const ADMIN_PASSWORD = 'ark2026admin';
 
 exports.main = async (event, context) => {
-  // 兼容 HTTP 网关（body 为字符串）和 SDK 直调（event 即参数）
-  const params = typeof event.body === 'string' ? JSON.parse(event.body) : event;
+  // 兼容多种调用方式
+  let params;
+  if (typeof event.body === 'string') {
+    params = JSON.parse(event.body);          // HTTP 网关
+  } else if (event.data && typeof event.data === 'object' && !event.action) {
+    params = event.data;                       // SDK v2 可能包装在 data 里
+  } else {
+    params = event;                            // SDK 直调 / MCP invoke
+  }
   const { action, password } = params;
+
+  // DEBUG: 返回收到的数据
+  if (action === '_debug') {
+    return {
+      success: true,
+      debug: {
+        eventKeys: Object.keys(event),
+        hasBody: typeof event.body,
+        hasData: event.data ? typeof event.data : 'none',
+        paramsKeys: Object.keys(params),
+        passwordReceived: password ? 'YES len=' + password.length : 'NO',
+        passwordVal: password
+      }
+    };
+  }
 
   // ─── 鉴权 ───
   if (password !== ADMIN_PASSWORD) {

@@ -1,4 +1,5 @@
-// CloudBase Web SDK（从 CDN 加载，全局变量 cloudbase）
+import cloudbase from '@cloudbase/js-sdk';
+
 const app = cloudbase.init({
   env: 'the-ark-heart-d9g2v024t5583b8a6',
   region: 'ap-shanghai'

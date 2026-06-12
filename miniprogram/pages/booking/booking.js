@@ -2,14 +2,8 @@
 Page({
   data: {
     formData: {
-      name: '',
-      phone: '',
-      wechat: '',
-      gender: '',
-      age: '',
-      direction: '',
-      description: '',
-      mode: ''
+      name: '', phone: '', wechat: '', gender: '', age: '',
+      direction: '', description: '', mode: ''
     },
     ageIndex: -1,
     genderOptions: [
@@ -32,35 +26,21 @@ Page({
       { label: '线下', value: 'offline' }
     ],
     agreed: false,
+    submitting: false,
     canSubmit: false
   },
 
-  onLoad(options) {
-    // 如果从首页服务卡片跳转，预填方向
-    if (options && options.type) {
-      const typeMap = {
-        counsel: '',
-        direction: '',
-        process: ''
-      };
-    }
-  },
+  onLoad(options) { },
 
   // 文本字段变化
   onFieldChange(e) {
     const field = e.currentTarget.dataset.field;
-    const value = e.detail.value;
-    this.setData({
-      [`formData.${field}`]: value
-    }, () => this.checkCanSubmit());
+    this.setData({ [`formData.${field}`]: e.detail.value }, () => this.checkCanSubmit());
   },
 
   // 性别选择
   onGenderChange(e) {
-    const value = e.currentTarget.dataset.value;
-    this.setData({
-      'formData.gender': value
-    }, () => this.checkCanSubmit());
+    this.setData({ 'formData.gender': e.currentTarget.dataset.value }, () => this.checkCanSubmit());
   },
 
   // 年龄选择
@@ -74,96 +54,63 @@ Page({
 
   // 咨询方向选择
   onDirectionChange(e) {
-    const value = e.currentTarget.dataset.value;
-    this.setData({
-      'formData.direction': value
-    }, () => this.checkCanSubmit());
+    this.setData({ 'formData.direction': e.currentTarget.dataset.value }, () => this.checkCanSubmit());
   },
 
   // 咨询方式选择
   onModeChange(e) {
-    const value = e.currentTarget.dataset.value;
-    this.setData({
-      'formData.mode': value
-    }, () => this.checkCanSubmit());
+    this.setData({ 'formData.mode': e.currentTarget.dataset.value }, () => this.checkCanSubmit());
   },
 
   // 协议勾选
   onToggleAgreement() {
-    this.setData({
-      agreed: !this.data.agreed
-    }, () => this.checkCanSubmit());
+    this.setData({ agreed: !this.data.agreed }, () => this.checkCanSubmit());
   },
 
   // 阅读协议
   onReadAgreement(e) {
-    // 阻止冒泡
     if (e) e.stopPropagation();
-    wx.showModal({
-      title: '咨询与预约协议',
-      content: '协议内容将在后续版本中完善。',
-      showCancel: false
-    });
+    wx.showModal({ title: '咨询与预约协议', content: '协议内容将在后续版本中完善。', showCancel: false });
   },
 
   // 检查是否可以提交
   checkCanSubmit() {
     const { name, phone, wechat, gender, age, direction, description } = this.data.formData;
-    const canSubmit = !!(name && phone && wechat && gender && age && direction && description && this.data.agreed);
-    this.setData({ canSubmit });
-
-    // 手机号格式校验
-    if (phone && !/^1[3-9]\d{9}$/.test(phone)) {
-      this.setData({ canSubmit: false });
-    }
+    let can = !!(name && phone && wechat && gender && age && direction && description && this.data.agreed);
+    if (phone && !/^1[3-9]\d{9}$/.test(phone)) can = false;
+    this.setData({ canSubmit: can && !this.data.submitting });
   },
 
-  // 提交
+  // 提交 → 调用云函数
   async onSubmit() {
-    if (!this.data.agreed) {
-      wx.showToast({ title: '请先阅读并同意协议', icon: 'none' });
-      return;
-    }
+    if (!this.data.agreed) { wx.showToast({ title: '请先阅读并同意协议', icon: 'none' }); return; }
+    if (this.data.submitting) return;
 
-    wx.showLoading({ title: '提交中...' });
+    this.setData({ submitting: true });
+    wx.showLoading({ title: '提交中...', mask: true });
 
     try {
-      const db = wx.cloud.database();
-      const formData = this.data.formData;
-
-      await db.collection('appointments').add({
-        data: {
-          ...formData,
-          status: 'pending', // 待确认
-          createdAt: db.serverDate(),
-          updatedAt: db.serverDate()
-        }
+      const res = await wx.cloud.callFunction({
+        name: 'createAppointment',
+        data: this.data.formData
       });
 
       wx.hideLoading();
-      wx.showToast({
-        title: '预约已提交',
-        icon: 'success',
-        duration: 2000
-      });
+      this.setData({ submitting: false });
 
-      // 返回首页
-      setTimeout(() => {
-        wx.switchTab({ url: '/pages/home/home' });
-      }, 2000);
-
+      if (res.result.success) {
+        wx.showToast({ title: '预约已提交', icon: 'success', duration: 2000 });
+        setTimeout(() => wx.switchTab({ url: '/pages/home/home' }), 2000);
+      } else {
+        wx.showToast({ title: res.result.message || '提交失败', icon: 'none', duration: 3000 });
+      }
     } catch (err) {
       wx.hideLoading();
+      this.setData({ submitting: false });
       console.error('提交失败:', err);
-      wx.showToast({
-        title: '提交失败，请重试',
-        icon: 'none'
-      });
+      wx.showToast({ title: '网络异常，请重试', icon: 'none' });
     }
   },
 
-  // 返回
-  onBack() {
-    wx.navigateBack();
-  }
+  onBack() { wx.navigateBack(); }
 });

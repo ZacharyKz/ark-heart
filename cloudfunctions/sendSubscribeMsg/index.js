@@ -2,36 +2,34 @@
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 
-// 模板消息配置（模板 ID 从微信公众平台获取后替换）
-const TEMPLATE_ID = 'YOUR_TEMPLATE_ID_HERE';
+const TEMPLATE_ID = 'TWLsZQ3vYBhWycHcN0xN5Vd3YM5yf_p7EMRldqn3dm0';
+
+// 模板字段: date3(开始时间) name5(预约人) thing2(预约地点)
 
 exports.main = async (event, context) => {
-  const { openid, appointmentId, type } = event;
-
+  const { openid, type } = event;
   if (!openid || !type) {
     return { success: false, message: '缺少参数' };
   }
 
   try {
-    // 根据 type 构建消息内容
-    let data;
+    let data, page;
     switch (type) {
       case 'confirmed':
-        // 预约已确认
         data = {
-          thing1: { value: '您的咨询预约已确认' },
-          time2: { value: event.dateText || '待定' },
-          thing3: { value: event.counselor || '待分配咨询师' },
-          thing4: { value: `咨询方式：${event.location || '待定'}` }
+          date3: { value: event.dateText || event.counselDate || '待定' },
+          name5: { value: event.userName || '来访者' },
+          thing2: { value: event.location || '线上咨询' }
         };
+        page = '/pages/records/records';
         break;
       case 'report':
-        // 报告已发布
         data = {
-          thing1: { value: '您的咨询报告已发布' },
-          thing2: { value: event.reportTitle || '关系咨询个案报告' },
-          date3: { value: new Date().toLocaleDateString('zh-CN') }
+          date3: { value: new Date().toLocaleDateString('zh-CN') },
+          name5: { value: '咨询报告已发布' },
+          thing2: { value: event.reportTitle || '关系咨询个案报告' }
         };
+        page = '/pages/reports/reports';
         break;
       default:
         return { success: false, message: '未知消息类型' };
@@ -40,7 +38,7 @@ exports.main = async (event, context) => {
     const result = await cloud.openapi.subscribeMessage.send({
       touser: openid,
       templateId: TEMPLATE_ID,
-      page: `/pages/reports/reports`,
+      page,
       data,
       miniprogramState: 'formal'
     });

@@ -83,7 +83,7 @@ Page({
         wx.showToast({ title: '预约已提交', icon: 'success' });
         // 提示订阅消息
         wx.requestSubscribeMessage({
-          tmplIds: ['YOUR_TEMPLATE_ID_HERE'],
+          tmplIds: ['TWLsZQ3vYBhWycHcN0xN5Vd3YM5yf_p7EMRldqn3dm0'],
           success: () => console.log('订阅提示已弹出'),
           complete: () => setTimeout(() => wx.switchTab({ url: '/pages/home/home' }), 1000)
         });

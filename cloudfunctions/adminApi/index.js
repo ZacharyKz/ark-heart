@@ -89,8 +89,8 @@ exports.main = async (event, context) => {
             data: {
               openid: appt.data._openid,
               type: 'confirmed',
+              userName: appt.data.name,
               dateText: dateText,
-              counselor: counselor,
               location: location
             }
           });

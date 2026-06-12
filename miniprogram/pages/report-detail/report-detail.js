@@ -26,11 +26,12 @@ Page({
     }
   },
 
-  // 图片预览
+  // 图片预览（支持放大）
   previewImage(e) {
-    const url = e.currentTarget.dataset.url;
-    const urls = this.data.report?.images || [];
-    wx.previewImage({ current: url, urls });
+    const current = e.currentTarget.dataset.url;
+    // 兼容对象 {fileID, url} 和纯字符串
+    const urls = (this.data.report?.images || []).map(img => img.url || img);
+    wx.previewImage({ current, urls });
   },
 
   fmt(date) {

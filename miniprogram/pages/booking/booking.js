@@ -59,23 +59,35 @@ Page({
     wx.showModal({ title: '咨询与预约协议', content: '协议内容将在后续版本中完善。', showCancel: false });
   },
 
-  // 提交——始终可点击，内部逐字段校验提示
-  async onSubmit() {
+  // 提交按钮 — 先弹订阅授权，再提交
+  onSubmit() {
     const f = this.data.formData;
 
-    // 逐字段检查
-    if (!f.name.trim())      return wx.showToast({ title: '请输入姓名', icon: 'none' });
-    if (!f.phone.trim())     return wx.showToast({ title: '请输入手机号', icon: 'none' });
+    if (!f.name.trim())       return wx.showToast({ title: '请输入姓名', icon: 'none' });
+    if (!f.phone.trim())      return wx.showToast({ title: '请输入手机号', icon: 'none' });
     if (!/^1[3-9]\d{9}$/.test(f.phone)) return wx.showToast({ title: '手机号格式不正确', icon: 'none' });
     // 微信号可选
-    if (!f.gender)           return wx.showToast({ title: '请选择性别', icon: 'none' });
-    if (!f.age)              return wx.showToast({ title: '请选择年龄', icon: 'none' });
-    if (!f.direction)        return wx.showToast({ title: '请选择咨询方向', icon: 'none' });
+    if (!f.gender)            return wx.showToast({ title: '请选择性别', icon: 'none' });
+    if (!f.age)               return wx.showToast({ title: '请选择年龄', icon: 'none' });
+    if (!f.direction)         return wx.showToast({ title: '请选择咨询方向', icon: 'none' });
     if (!f.description.trim()) return wx.showToast({ title: '请填写问题简述', icon: 'none' });
-    if (!f.mode)             return wx.showToast({ title: '请选择咨询方式', icon: 'none' });
-    if (!this.data.agreed)   return wx.showToast({ title: '请阅读并同意协议', icon: 'none' });
-    if (this.data.submitting) return;
+    if (!f.mode)              return wx.showToast({ title: '请选择咨询方式', icon: 'none' });
+    if (!this.data.agreed)    return wx.showToast({ title: '请阅读并同意协议', icon: 'none' });
+    if (this.data.submitting)  return;
 
+    // 先弹订阅授权（必须在用户点击事件中直接触发，不能在 async 回调里）
+    wx.requestSubscribeMessage({
+      tmplIds: ['TWLsZQ3vYBhWycHcN0xN5Vd3YM5yf_p7EMRldqn3dm0'],
+      success: (res) => console.log('订阅授权结果:', res),
+      fail: (err) => console.log('订阅授权失败:', err),
+      complete: () => {
+        // 无论是否授权，都继续提交
+        wx.nextTick(() => this._doSubmit(f));
+      }
+    });
+  },
+
+  async _doSubmit(f) {
     this.setData({ submitting: true });
     wx.showLoading({ title: '提交中...', mask: true });
     try {
@@ -83,12 +95,7 @@ Page({
       wx.hideLoading();
       if (res.result.success) {
         wx.showToast({ title: '预约已提交', icon: 'success' });
-        // 提示订阅消息
-        wx.requestSubscribeMessage({
-          tmplIds: ['TWLsZQ3vYBhWycHcN0xN5Vd3YM5yf_p7EMRldqn3dm0'],
-          success: () => console.log('订阅提示已弹出'),
-          complete: () => setTimeout(() => wx.switchTab({ url: '/pages/home/home' }), 1000)
-        });
+        setTimeout(() => wx.switchTab({ url: '/pages/home/home' }), 1500);
       } else {
         this.setData({ submitting: false });
         wx.showToast({ title: res.result.message || '提交失败', icon: 'none' });

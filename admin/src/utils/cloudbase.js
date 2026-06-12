@@ -32,24 +32,39 @@ export async function callAdminApi(action, params = {}) {
   }
 }
 
-// 上传图片到云存储
+// 上传图片到云存储，返回 fileID 和临时 URL
 export async function uploadImage(file) {
   await ensureAuth();
   const ext = file.name.split('.').pop() || 'png';
   const cloudPath = `reports/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  // 兼容新旧 SDK
-  const uploadFn = app.uploadFile || (app.storage && app.storage.uploadFile);
-  if (!uploadFn) throw new Error('CloudBase SDK 不支持文件上传');
-  const res = await uploadFn.call(app.storage || app, { cloudPath, filePath: file });
-  const fileID = res.fileID || (res.data && res.data.fileID);
-  if (fileID) {
-    const getUrl = app.getTempFileURL || (app.storage && app.storage.getTempFileURL);
-    if (getUrl) {
-      const urlRes = await getUrl.call(app.storage || app, { fileList: [fileID] });
-      const list = urlRes.fileList || (urlRes.data && urlRes.data.fileList) || [];
-      return list[0]?.tempFileURL || fileID;
-    }
-    return fileID;
+
+  let res;
+  // 尝试新 SDK API: app.storage.uploadFile({ cloudPath, file })
+  if (app.storage && app.storage.uploadFile) {
+    res = await app.storage.uploadFile({ cloudPath, file });
+    console.log('storage.uploadFile result:', res);
+  } else if (app.uploadFile) {
+    // 旧 SDK API: app.uploadFile({ cloudPath, filePath })
+    res = await app.uploadFile({ cloudPath, filePath: file });
+    console.log('uploadFile result:', res);
+  } else {
+    throw new Error('CloudBase SDK 不支持文件上传');
   }
-  return fileID || res;
+
+  // 提取 fileID
+  const fileID = res?.fileID || res?.data?.fileID;
+  if (!fileID) throw new Error('上传成功但未获取到 fileID');
+
+  // 获取临时下载链接
+  let url;
+  if (app.getTempFileURL) {
+    const urlRes = await app.getTempFileURL({ fileList: [fileID] });
+    url = urlRes.fileList?.[0]?.tempFileURL;
+  } else if (app.storage && app.storage.getTempFileURL) {
+    const urlRes = await app.storage.getTempFileURL({ fileList: [fileID] });
+    url = urlRes.fileList?.[0]?.tempFileURL || urlRes?.data?.fileList?.[0]?.tempFileURL;
+  }
+
+  // 返回 { fileID, url } 对象
+  return { fileID, url: url || fileID };
 }

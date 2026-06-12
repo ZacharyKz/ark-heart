@@ -28,7 +28,7 @@
     <view class="rpt-section" wx:if="{{report.images && report.images.length > 0}}">
       <text class="rpt-section-title">图片报告</text>
       <view class="rpt-images">
-        <image wx:for="{{report.images}}" wx:key="index" src="{{item}}" mode="widthFix" class="rpt-image" bindtap="previewImage" data-url="{{item}}" />
+        <image wx:for="{{report.images}}" wx:key="*this" src="{{item.url || item}}" mode="widthFix" class="rpt-image" bindtap="previewImage" data-url="{{item.url || item}}" />
       </view>
     </view>
 

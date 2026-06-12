@@ -379,15 +379,15 @@ async function submitReport() {
   }
 
   // 上传图片
-  const uploadedUrls = [];
+  const imageList = [];
   for (const img of rptImages.value) {
     if (!img.uploaded && img.file) {
       try {
-        const url = await uploadImage(img.file);
-        uploadedUrls.push(url);
+        const result = await uploadImage(img.file);
+        imageList.push({ fileID: result.fileID, url: result.url });
         img.uploaded = true;
       } catch (e) {
-        alert('图片上传失败: ' + e.message);
+        alert('图片上传失败: ' + (e.message || JSON.stringify(e)));
         return;
       }
     }
@@ -396,7 +396,7 @@ async function submitReport() {
   const res = await callAdminApi('createReport', {
     appointmentId: reportTarget.value._id,
     ...rpt.value,
-    images: uploadedUrls
+    images: imageList
   });
   if (res.success) {
     alert('报告已创建');

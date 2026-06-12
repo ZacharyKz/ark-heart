@@ -125,7 +125,10 @@ exports.main = async (event, context) => {
             process: event.process || '',
             strengths: event.strengths || '',
             improvements: event.improvements || '',
-            images: event.images || [],
+            images: (event.images || []).map(img => ({
+              fileID: img.fileID || img,
+              url: img.url || img
+            })),
             suggestion: event.suggestion || '',
             content: event.content || '',
             reportStatus: 'ongoing',

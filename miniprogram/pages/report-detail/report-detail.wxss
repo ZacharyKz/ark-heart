@@ -1,4 +1,4 @@
-/* 专业报告排版 */
+/* 关系咨询个案报告 */
 .page { min-height: 100vh; background: var(--bg); padding-bottom: 48rpx; }
 .status-bar-placeholder { height: var(--status-bar-height, 44px); background: var(--bg); }
 
@@ -10,7 +10,7 @@
 
 .content-body { padding: 0 32rpx 48rpx; }
 
-/* 报告头部 */
+/* 头部 */
 .rpt-header { background: #fff; border-radius: 28rpx; padding: 40rpx 32rpx; margin-bottom: 20rpx; box-shadow: 0 2rpx 12rpx var(--shadow); }
 .rpt-main-title { font-size: 38rpx; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 20rpx; text-align: center; }
 .rpt-meta { display: flex; flex-wrap: wrap; gap: 12rpx 24rpx; margin-bottom: 12rpx; }
@@ -21,12 +21,16 @@
 .rpt-counselor { font-size: 26rpx; color: var(--text-primary); font-weight: 500; display: block; }
 .rpt-divider { height: 1rpx; background: var(--border); margin: 12rpx 0; }
 
-/* 报告章节 */
+/* 章节 */
 .rpt-section { background: #fff; border-radius: 24rpx; padding: 32rpx; margin-bottom: 20rpx; box-shadow: 0 2rpx 8rpx var(--shadow); }
 .rpt-section-title { font-size: 30rpx; font-weight: 700; color: var(--green-dark); display: block; margin-bottom: 20rpx; padding-bottom: 16rpx; border-bottom: 2rpx solid var(--green-light); }
 .rpt-text { font-size: 28rpx; color: var(--text-primary); line-height: 1.9; white-space: pre-wrap; }
 
-/* 报告尾部 */
+/* 图片 */
+.rpt-images { display: flex; flex-direction: column; gap: 16rpx; }
+.rpt-image { width: 100%; border-radius: 16rpx; }
+
+/* 尾部 */
 .rpt-footer { padding: 20rpx 32rpx 40rpx; }
 .rpt-footer .rpt-divider { margin-bottom: 20rpx; }
 .rpt-footer-text { font-size: 24rpx; color: var(--text-secondary); display: block; margin-bottom: 8rpx; }

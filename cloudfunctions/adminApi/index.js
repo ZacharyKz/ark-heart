@@ -105,8 +105,8 @@ exports.main = async (event, context) => {
         if (!appt.data) return { success: false, message: '预约不存在' };
 
         // 生成报告编号: 年月日-RC序号
-        const today = new Date();
-        const dateStr = `${today.getFullYear()}${String(today.getMonth()+1).padStart(2,'0')}${String(today.getDate()).padStart(2,'0')}`;
+        const now = new Date();
+        const dateStr = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
         const count = await db.collection('reports').count();
         const reportNo = `${dateStr}-RC${String(count.total + 1).padStart(2,'0')}`;
 
@@ -123,7 +123,9 @@ exports.main = async (event, context) => {
             clientInfo: event.clientInfo || '',
             complaint: event.complaint || '',
             process: event.process || '',
-            assessment: event.assessment || '',
+            strengths: event.strengths || '',
+            improvements: event.improvements || '',
+            images: event.images || [],
             suggestion: event.suggestion || '',
             content: event.content || '',
             reportStatus: 'ongoing',

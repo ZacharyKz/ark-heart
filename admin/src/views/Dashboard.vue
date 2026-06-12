@@ -74,10 +74,10 @@
       <!-- 报告 -->
       <section v-if="activeTab === 'reports'" class="reports">
         <form v-if="showReportForm" class="report-form-full card" @submit.prevent="submitReport">
-          <h3>心理咨询个案报告 — {{ reportTarget?.name }}</h3>
+          <h3>关系咨询个案报告 — {{ reportTarget?.name }}</h3>
 
           <div class="rpt-row">
-            <div class="rpt-field"><label>报告标题</label><input v-model="rpt.title" class="input" placeholder="心理咨询个案报告" /></div>
+            <div class="rpt-field"><label>报告标题</label><input v-model="rpt.title" class="input" placeholder="关系咨询个案报告" /></div>
             <div class="rpt-field"><label>咨询师</label><input v-model="rpt.counselor" class="input" placeholder="咨询师姓名" /></div>
           </div>
           <div class="rpt-row rpt-row-3">
@@ -94,9 +94,28 @@
 
           <div class="rpt-field"><label>咨询过程概述</label><textarea v-model="rpt.process" class="textarea" rows="5" placeholder="咨询初期...咨询中段...咨询后段..." /></div>
 
-          <div class="rpt-field"><label>咨询师观察与评估</label><textarea v-model="rpt.assessment" class="textarea" rows="4" placeholder="精神状态、思维能力、风险评估、问题范畴..." /></div>
+          <div class="rpt-field"><label>你的优势</label><textarea v-model="rpt.strengths" class="textarea" rows="3" placeholder="来访者在哪些方面做得不错、有哪些积极特质..." /></div>
+
+          <div class="rpt-field"><label>你可以继续提升的地方</label><textarea v-model="rpt.improvements" class="textarea" rows="3" placeholder="哪些方面还有成长空间、可以尝试的方向..." /></div>
 
           <div class="rpt-field"><label>后续建议</label><textarea v-model="rpt.suggestion" class="textarea" rows="3" placeholder="咨询频率、方向建议、辅助练习..." /></div>
+
+          <!-- 图片上传 -->
+          <div class="rpt-field">
+            <label>图片报告（可选）</label>
+            <div class="img-upload-area">
+              <input type="file" accept="image/*" multiple @change="onImagesPicked" ref="fileInput" style="display:none" />
+              <button type="button" class="btn-upload" @click="$refs.fileInput.click()">选择图片</button>
+              <span class="upload-hint" v-if="rptImages.length === 0">可上传其他软件生成的报告图片</span>
+              <div class="img-preview-row" v-if="rptImages.length > 0">
+                <div class="img-preview" v-for="(img, i) in rptImages" :key="i">
+                  <img :src="img.preview" />
+                  <button type="button" class="img-remove" @click="rptImages.splice(i, 1)">&times;</button>
+                  <span class="img-status">{{ img.uploaded ? '已上传' : '待上传' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <button type="submit" class="btn">提交报告</button>
         </form>
@@ -122,7 +141,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { callAdminApi } from '../utils/cloudbase.js';
+import { callAdminApi, uploadImage } from '../utils/cloudbase.js';
 
 const router = useRouter();
 const activeTab = ref('appointments');
@@ -131,10 +150,11 @@ const appointments = ref([]);
 const showReportForm = ref(false);
 const reportTarget = ref(null);
 const rpt = ref({
-  title: '心理咨询个案报告', counselor: '', counselDate: '',
+  title: '关系咨询个案报告', counselor: '', counselDate: '',
   duration: '50分钟', method: '', clientInfo: '',
-  complaint: '', process: '', assessment: '', suggestion: ''
+  complaint: '', process: '', strengths: '', improvements: '', suggestion: ''
 });
+const rptImages = ref([]);
 const showConfirm = ref(false);
 const confirmTarget = ref(null);
 const confirmForm = ref({ counselor: '', dateText: '', location: '' });
@@ -230,7 +250,7 @@ async function completeAppt(a) {
 function showReport(a) {
   reportTarget.value = a;
   rpt.value = {
-    title: '心理咨询个案报告',
+    title: '关系咨询个案报告',
     counselor: a.counselor || '',
     counselDate: new Date().toISOString().split('T')[0],
     duration: '50分钟',
@@ -238,17 +258,47 @@ function showReport(a) {
     clientInfo: '',
     complaint: '',
     process: '',
-    assessment: '',
+    strengths: '',
+    improvements: '',
     suggestion: ''
   };
+  rptImages.value = [];
   showReportForm.value = true;
   activeTab.value = 'reports';
 }
 
+function onImagesPicked(e) {
+  const files = Array.from(e.target.files);
+  files.forEach(f => {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      rptImages.value.push({ file: f, preview: ev.target.result, uploaded: false });
+    };
+    reader.readAsDataURL(f);
+  });
+  e.target.value = '';
+}
+
 async function submitReport() {
+  // 先上传所有图片
+  const uploadedUrls = [];
+  for (const img of rptImages.value) {
+    if (!img.uploaded && img.file) {
+      try {
+        const url = await uploadImage(img.file);
+        uploadedUrls.push(url);
+        img.uploaded = true;
+      } catch (e) {
+        alert('图片上传失败: ' + e.message);
+        return;
+      }
+    }
+  }
+
   const res = await callAdminApi('createReport', {
     appointmentId: reportTarget.value._id,
-    ...rpt.value
+    ...rpt.value,
+    images: uploadedUrls
   });
   if (res.success) {
     alert('报告已创建');

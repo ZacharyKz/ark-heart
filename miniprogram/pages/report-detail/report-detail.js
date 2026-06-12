@@ -26,6 +26,13 @@ Page({
     }
   },
 
+  // 图片预览
+  previewImage(e) {
+    const url = e.currentTarget.dataset.url;
+    const urls = this.data.report?.images || [];
+    wx.previewImage({ current: url, urls });
+  },
+
   fmt(date) {
     const d = new Date(date);
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;

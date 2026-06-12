@@ -1,4 +1,4 @@
-<!-- pages/report-detail/report-detail.wxml — 心理咨询报告详情 -->
+<!-- pages/report-detail/report-detail.wxml -->
 <view class="page">
   <view class="status-bar-placeholder"></view>
   <view class="header-row">
@@ -11,17 +11,25 @@
 
   <view wx:if="{{report}}" class="content-body">
 
-    <!-- 报告头部 -->
+    <!-- 头部 -->
     <view class="rpt-header">
-      <text class="rpt-main-title">心理咨询个案报告</text>
+      <text class="rpt-main-title">关系咨询个案报告</text>
       <view class="rpt-meta">
         <text class="rpt-no">编号：{{report.reportNo || '-'}}</text>
         <text class="rpt-date">咨询日期：{{report.counselDate || '-'}}</text>
         <text class="rpt-duration">时长：{{report.duration || '-'}}</text>
         <text class="rpt-method">方式：{{report.method || '-'}}</text>
       </view>
-      <text class="rpt-counselor">咨询师：{{report.counselor || '-'}}</text>
+      <text class="rpt-counselor" wx:if="{{report.counselor}}">咨询师：{{report.counselor}}</text>
       <view class="rpt-divider"></view>
+    </view>
+
+    <!-- 图片报告 -->
+    <view class="rpt-section" wx:if="{{report.images && report.images.length > 0}}">
+      <text class="rpt-section-title">图片报告</text>
+      <view class="rpt-images">
+        <image wx:for="{{report.images}}" wx:key="index" src="{{item}}" mode="widthFix" class="rpt-image" bindtap="previewImage" data-url="{{item}}" />
+      </view>
     </view>
 
     <!-- 来访者基本信息 -->
@@ -42,27 +50,33 @@
       <text class="rpt-text">{{report.process}}</text>
     </view>
 
-    <!-- 观察与评估 -->
-    <view class="rpt-section" wx:if="{{report.assessment}}">
-      <text class="rpt-section-title">四、咨询师观察与评估</text>
-      <text class="rpt-text">{{report.assessment}}</text>
+    <!-- 你的优势 -->
+    <view class="rpt-section" wx:if="{{report.strengths}}">
+      <text class="rpt-section-title">四、你的优势</text>
+      <text class="rpt-text">{{report.strengths}}</text>
+    </view>
+
+    <!-- 可以继续提升的地方 -->
+    <view class="rpt-section" wx:if="{{report.improvements}}">
+      <text class="rpt-section-title">五、你可以继续提升的地方</text>
+      <text class="rpt-text">{{report.improvements}}</text>
     </view>
 
     <!-- 后续建议 -->
     <view class="rpt-section" wx:if="{{report.suggestion}}">
-      <text class="rpt-section-title">五、后续建议</text>
+      <text class="rpt-section-title">六、后续建议</text>
       <text class="rpt-text">{{report.suggestion}}</text>
     </view>
 
-    <!-- 兼容旧数据：纯文本内容 -->
+    <!-- 旧数据兼容 -->
     <view class="rpt-section" wx:if="{{report.content && !report.process}}">
       <text class="rpt-text">{{report.content}}</text>
     </view>
 
-    <!-- 报告尾部 -->
+    <!-- 尾部 -->
     <view class="rpt-footer">
       <view class="rpt-divider"></view>
-      <text class="rpt-footer-text">报告撰写：{{report.counselor || '-'}}</text>
+      <text class="rpt-footer-text" wx:if="{{report.counselor}}">报告撰写：{{report.counselor}}</text>
       <text class="rpt-footer-text">撰写日期：{{report.dateText || '-'}}</text>
       <text class="rpt-footer-note">本报告仅供咨询工作内部使用，来访者信息已做匿名化处理。</text>
     </view>

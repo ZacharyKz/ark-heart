@@ -10,7 +10,7 @@
 
     <!-- Tabs -->
     <nav class="tabs">
-      <button v-for="t in tabs" :key="t.key" :class="['tab', { active: activeTab === t.key }]" @click="activeTab = t.key">
+      <button v-for="t in tabs" :key="t.key" :class="['tab', { active: activeTab === t.key }]" @click="switchTab(t.key)">
         {{ t.label }}
       </button>
     </nav>
@@ -73,6 +73,29 @@
 
       <!-- 报告 -->
       <section v-if="activeTab === 'reports'" class="reports">
+
+        <!-- 报告列表 -->
+        <div v-if="!showReportForm">
+          <div class="rpt-list-header-bar">
+            <span class="rpt-count">共 {{ reports.length }} 份报告</span>
+          </div>
+          <table class="table" v-if="reports.length">
+            <thead><tr><th>标题</th><th>来访者</th><th>咨询师</th><th>日期</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr v-for="r in reports" :key="r._id">
+                <td>{{ r.title || '-' }}</td>
+                <td>{{ r.clientInfo ? r.clientInfo.slice(0,15) : '-' }}</td>
+                <td>{{ r.counselor || '-' }}</td>
+                <td>{{ r.counselDate || '-' }}</td>
+                <td><span :class="'badge ' + (r.reportStatus === 'ongoing' ? 'badge-pending' : 'badge-done')">{{ r.reportStatus === 'ongoing' ? '进行中' : '已关闭' }}</span></td>
+                <td><button class="act-btn report" @click="viewReport(r)">查看</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <div v-else class="empty">暂无报告</div>
+        </div>
+
+        <!-- 报告表单 -->
         <form v-if="showReportForm" class="report-form-full card" @submit.prevent="submitReport">
           <h3>关系咨询个案报告 — {{ reportTarget?.name }}</h3>
 
@@ -152,6 +175,7 @@ const currentFilter = ref('all');
 const appointments = ref([]);
 const showReportForm = ref(false);
 const reportTarget = ref(null);
+const reports = ref([]);
 const rpt = ref({
   title: '关系咨询个案报告', counselor: '', counselDate: '',
   duration: '50分钟', method: '', clientInfo: '',
@@ -270,6 +294,29 @@ function showReport(a) {
   activeTab.value = 'reports';
 }
 
+async function loadReports() {
+  const res = await callAdminApi('listReports');
+  if (res.success) reports.value = res.data || [];
+}
+
+function viewReport(r) {
+  reportTarget.value = r;
+  rpt.value = {
+    title: r.title || '关系咨询个案报告',
+    counselor: r.counselor || '',
+    counselDate: r.counselDate || '',
+    duration: r.duration || '',
+    method: r.method || '',
+    clientInfo: r.clientInfo || '',
+    complaint: r.complaint || '',
+    process: r.process || '',
+    strengths: r.strengths || '',
+    improvements: r.improvements || '',
+    suggestion: r.suggestion || ''
+  };
+  showReportForm.value = true;
+}
+
 function addImages(files) {
   Array.from(files).forEach(f => {
     if (!f.type.startsWith('image/')) return;
@@ -335,7 +382,16 @@ function logout() {
 onMounted(() => {
   loadAppointments('all');
   loadStats();
+  loadReports();
 });
+
+// tab 切换时刷新数据
+function switchTab(key) {
+  activeTab.value = key;
+  if (key === 'appointments') loadAppointments(currentFilter.value);
+  if (key === 'stats') loadStats();
+  if (key === 'reports') loadReports();
+}
 </script>
 
 <style scoped>

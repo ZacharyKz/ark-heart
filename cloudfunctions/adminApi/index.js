@@ -173,6 +173,23 @@ exports.main = async (event, context) => {
         };
       }
 
+      // ─── 报告列表 ───
+      case 'listReports': {
+        const list = await db.collection('reports')
+          .orderBy('createdAt', 'desc')
+          .limit(100)
+          .get();
+        return { success: true, data: list.data };
+      }
+
+      // ─── 报告详情 ───
+      case 'getReport': {
+        const { id } = event;
+        if (!id) return { success: false, message: '缺少报告 ID' };
+        const r = await db.collection('reports').doc(id).get();
+        return { success: true, data: r.data };
+      }
+
       default:
         return { success: false, message: `未知操作: ${action}` };
     }

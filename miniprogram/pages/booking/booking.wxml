@@ -84,7 +84,7 @@
       </view>
     </view>
 
-    <button class="btn-submit" disabled="{{!canSubmit}}" bindtap="onSubmit">提交预约</button>
+    <button class="btn-submit" bindtap="onSubmit">提交预约</button>
     <text class="submit-hint">提交后，管理员将通过微信联系您确认咨询师和具体时间</text>
   </view>
 </view>

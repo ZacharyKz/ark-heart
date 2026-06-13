@@ -163,6 +163,31 @@
           <button type="submit" class="btn">提交报告</button>
         </form>
       </section>
+
+      <!-- 图片管理 -->
+      <section v-if="activeTab === 'images'" class="images">
+        <div class="img-mgr-header">
+          <span class="rpt-count">共 {{ imageList.length }} 张图片</span>
+          <label class="btn-upload-img">
+            <input type="file" accept="image/*" @change="onUploadImage" style="display:none" ref="imgUploadInput" />
+            上传新图片
+          </label>
+        </div>
+        <div class="img-grid-mgr">
+          <div class="img-card-mgr" v-for="img in imageList" :key="img.Key">
+            <img :src="img.tempUrl || img.cloudUrl" class="img-preview-mgr" />
+            <div class="img-name">{{ img.name }}</div>
+            <div class="img-actions">
+              <label class="act-btn report small" style="cursor:pointer">
+                <input type="file" accept="image/*" @change="(e) => onReplaceImage(e, img)" style="display:none" />
+                替换
+              </label>
+              <button class="act-btn delete-btn small" @click="onDeleteImage(img)">删除</button>
+            </div>
+          </div>
+        </div>
+        <div v-if="imageList.length === 0" class="empty">暂无图片</div>
+      </section>
     </main>
 
     <!-- 确认预约弹窗 -->
@@ -206,7 +231,8 @@ const confirmForm = ref({ counselor: '', dateText: '', location: '' });
 const tabs = [
   { key: 'appointments', label: '预约管理' },
   { key: 'stats', label: '数据统计' },
-  { key: 'reports', label: '报告管理' }
+  { key: 'reports', label: '报告管理' },
+  { key: 'images', label: '图片管理' }
 ];
 
 const filters = [
@@ -420,11 +446,62 @@ onMounted(() => {
 });
 
 // tab 切换时刷新数据
+const imageList = ref([]);
+
+async function loadImages() {
+  try {
+    const res = await callAdminApi('listImages');
+    if (res.success) {
+      const list = (res.data || []).map(f => ({
+        ...f,
+        name: f.Key ? f.Key.replace('images/', '') : '',
+        cloudUrl: `cloud://the-ark-heart-d9g2v024t5583b8a6.7468-the-ark-heart-d9g2v024t5583b8a6-1442771109/images/${(f.Key || '').replace('images/', '')}`,
+        tempUrl: f.url || ''
+      }));
+      imageList.value = list;
+    }
+  } catch (e) { console.error('loadImages:', e); }
+}
+
+async function onUploadImage(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const result = await uploadImage(file);
+    await callAdminApi('saveImage', { key: 'images/' + file.name, name: file.name });
+    alert('上传成功');
+    loadImages();
+  } catch (e) { alert('上传失败: ' + (e.message || e)); }
+  e.target.value = '';
+}
+
+async function onReplaceImage(e, img) {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    await callAdminApi('deleteImage', { key: img.Key, id: img._id });
+    const result = await uploadImage(file);
+    await callAdminApi('saveImage', { key: img.Key, name: img.name || file.name });
+    alert('替换成功');
+    loadImages();
+  } catch (err) { alert('替换失败: ' + (err.message || err)); }
+  e.target.value = '';
+}
+
+async function onDeleteImage(img) {
+  if (!confirm('删除 ' + img.name + '？')) return;
+  try {
+    await callAdminApi('deleteImage', { key: img.Key });
+    loadImages();
+  } catch (e) { alert('删除失败'); }
+}
+
 function switchTab(key) {
   activeTab.value = key;
   if (key === 'appointments') loadAppointments(currentFilter.value);
   if (key === 'stats') loadStats();
   if (key === 'reports') loadReports();
+  if (key === 'images') loadImages();
 }
 </script>
 
@@ -545,4 +622,17 @@ function switchTab(key) {
 .form-top-bar h3 { margin: 0; font-size: 18px; color: #2D2D2D; }
 .btn-back { background: none; border: 1px solid #D0D0D0; padding: 6px 18px; border-radius: 8px; font-size: 14px; color: #666; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
 .btn-back:hover { border-color: #6B9E7D; color: #6B9E7D; }
+</style>
+
+<style scoped>
+/* Image Manager */
+.img-mgr-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-top: 16px; }
+.btn-upload-img { padding: 8px 20px; background: #6B9E7D; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; display: inline-block; }
+.btn-upload-img:hover { background: #5A8A6C; }
+.img-grid-mgr { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+.img-card-mgr { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); overflow: hidden; }
+.img-preview-mgr { width: 100%; height: 150px; object-fit: cover; }
+.img-name { font-size: 12px; color: #666; padding: 8px 12px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.img-actions { display: flex; gap: 6px; padding: 8px 12px 12px; }
+.act-btn.small { font-size: 11px; padding: 3px 10px; border-radius: 6px; }
 </style>

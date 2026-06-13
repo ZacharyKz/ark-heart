@@ -306,6 +306,34 @@ exports.main = async (event, context) => {
         return { success: true, data: r.data };
       }
 
+      case 'saveImage': {
+        const { key, name } = event;
+        if (!key || !name) return { success: false, message: '缺少参数' };
+        await db.collection('images').add({ data: { Key: key, name, createdAt: db.serverDate() } });
+        return { success: true, message: '已保存' };
+      }
+
+      // ─── 图片管理 ───
+      case 'listImages': {
+        const list = await db.collection('images').orderBy('createdAt', 'desc').limit(100).get();
+        return { success: true, data: list.data };
+      }
+
+      case 'deleteImage': {
+        const { key, id } = event;
+        if (key) {
+          try {
+            await cloud.deleteFile({
+              fileList: [`cloud://the-ark-heart-d9g2v024t5583b8a6.7468-the-ark-heart-d9g2v024t5583b8a6-1442771109/${key}`],
+            });
+          } catch (e) { /* ignore */ }
+        }
+        if (id) {
+          await db.collection('images').doc(id).remove();
+        }
+        return { success: true, message: '已删除' };
+      }
+
       default:
         return { success: false, message: `未知操作: ${action}` };
     }

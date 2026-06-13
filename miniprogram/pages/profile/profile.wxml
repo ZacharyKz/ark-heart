@@ -72,11 +72,8 @@
 
   <!-- 励志横幅 -->
   <view class="pf-motivation-banner">
-    <view class="motivation-text">
-      <text class="motivation-quote">每一步探索，\n都在靠近更好的自己。</text>
-      <text class="motivation-author">— The Ark Heart</text>
     </view>
-    <image class="motivation-img" src="cloud://the-ark-heart-d9g2v024t5583b8a6.7468-the-ark-heart-d9g2v024t5583b8a6-1442771109/images/profile-banner.png" mode="aspectFill" />
+    <image class="motivation-img-full" src="cloud://the-ark-heart-d9g2v024t5583b8a6.7468-the-ark-heart-d9g2v024t5583b8a6-1442771109/images/profile-banner.png" mode="aspectFill" />
   </view>
 
   <tab-bar current="{{3}}" />

@@ -7,11 +7,11 @@
       <!-- 左上角 Logo -->
 <image class="header-logo" src="/images/logo.svg" mode="aspectFit" />
       <text class="header-title">The Ark Heart</text>
-    </view>
+
     <view class="header-menu" bindtap="onSettingsTap">
       <!-- 设置图标 -->
 <image src="/images/icon-settings.svg" mode="aspectFit" class="settings-icon" />
-    </view>
+
   </view>
 
   <!-- 用户信息 -->
@@ -21,14 +21,14 @@
 <image class="pf-avatar" src="/images/default-avatar.svg" mode="aspectFill" />
       <view class="pf-user-info">
         <text class="pf-user-name">微信一键登录</text>
-      </view>
+  
     </button>
     <block wx:else>
       <image class="pf-avatar" src="{{userInfo.avatar || '/images/default-avatar.svg'}}" mode="aspectFill" />
       <view class="pf-user-info">
         <text class="pf-user-name">{{userInfo.nickname || '来访者'}}</text>
         <text class="pf-user-motto">愿你心安，找到内心的方舟</text>
-      </view>
+  
       <text class="pf-edit-link" bindtap="onEditProfile">编辑资料 &gt;</text>
     </block>
   </view>
@@ -42,12 +42,12 @@
           <view class="service-icon-wrap">
             <!-- 我的·服务宫格图标 -->
 <image src="{{item.icon}}" mode="aspectFit" class="service-icon-img" />
-          </view>
+      
           <text class="service-name">{{item.label}}</text>
           <text class="service-desc">{{item.desc}}</text>
-        </view>
-      </view>
-    </view>
+    
+  
+
 
     <!-- 菜单列表 -->
     <view class="pf-section">
@@ -56,13 +56,13 @@
           <view class="menu-icon-wrap">
             <!-- 我的·服务宫格图标 -->
 <image src="{{item.icon}}" mode="aspectFit" class="menu-icon-img" />
-          </view>
+      
           <text class="menu-label">{{item.label}}</text>
           <!-- 右箭头 -->
 <image src="/images/chevron-right.svg" mode="aspectFit" class="menu-chevron" />
-        </view>
-      </view>
-    </view>
+    
+  
+
   </view>
 
   <!-- 未登录提示 -->
@@ -72,10 +72,6 @@
 
   <!-- 励志横幅 -->
   <view class="pf-motivation-banner">
-    <view class="motivation-text">
-      <text class="motivation-quote">每一步探索，\n都在靠近更好的自己。</text>
-      <text class="motivation-author">— The Ark Heart</text>
-    </view>
     <image class="motivation-img" src="cloud://the-ark-heart-d9g2v024t5583b8a6.7468-the-ark-heart-d9g2v024t5583b8a6-1442771109/images/profile-banner.png" mode="aspectFill" />
   </view>
 

@@ -58,7 +58,7 @@
 .banner-area {
   width: 100%;
   height: 390rpx;
-  background: url(https://7468-the-ark-heart-d9g2v024t5583b8a6-1442771109.tcb.qcloud.la/images/logo.png) center/cover no-repeat;
+  
 }
 
 .banner-img {

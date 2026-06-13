@@ -22,7 +22,7 @@
   display: flex; align-items: center; padding: 0; margin: 0;
   background: transparent; border: none; line-height: normal;
   width: 100%; text-align: left;
-
+}
 .wx-login-btn::after { border: none; }
 .wx-login-btn .pf-user-name { color: var(--green); }
 
@@ -36,7 +36,7 @@
 .pf-service-card {
   background: #fff; border-radius: 24rpx; box-shadow: 0 2rpx 8rpx var(--shadow);
   padding: 40rpx 16rpx; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8rpx;
-
+}
 .pf-service-tile { display: flex; flex-direction: column; align-items: center; gap: 12rpx; padding: 8rpx; border-radius: 16rpx; }
 .service-icon-wrap { width: 72rpx; height: 72rpx; display: flex; align-items: center; justify-content: center; }
 .service-icon-img { width: 56rpx; height: 56rpx; }
@@ -51,8 +51,6 @@
 .menu-icon-img { width: 40rpx; height: 40rpx; }
 .menu-label { flex: 1; font-size: 28rpx; font-weight: 500; color: var(--text-primary); }
 .menu-chevron { width: 32rpx; height: 32rpx; opacity: 0.4; }
-
-/* 励志横幅 */
 
 /* 励志横幅 */
 .pf-motivation-banner { margin: 0 32rpx 48rpx; border-radius: 24rpx; overflow: hidden; }

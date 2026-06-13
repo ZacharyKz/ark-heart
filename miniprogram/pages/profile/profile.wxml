@@ -4,21 +4,18 @@
 
   <view class="brand-header">
     <view class="header-left">
-      <!-- 左上角 Logo -->
-<image class="header-logo" src="/images/logo.svg" mode="aspectFit" />
+      <image class="header-logo" src="/images/logo.svg" mode="aspectFit" />
       <text class="header-title">The Ark Heart</text>
     </view>
     <view class="header-menu" bindtap="onSettingsTap">
-      <!-- 设置图标 -->
-<image src="/images/icon-settings.svg" mode="aspectFit" class="settings-icon" />
+      <image src="/images/icon-settings.svg" mode="aspectFit" class="settings-icon" />
     </view>
   </view>
 
   <!-- 用户信息 -->
   <view class="pf-header-banner">
     <button wx:if="{{!isLogin}}" class="wx-login-btn" bindtap="onWxLogin">
-      <!-- 用户默认头像 -->
-<image class="pf-avatar" src="/images/default-avatar.svg" mode="aspectFill" />
+      <image class="pf-avatar" src="/images/default-avatar.svg" mode="aspectFill" />
       <view class="pf-user-info">
         <text class="pf-user-name">微信一键登录</text>
       </view>
@@ -40,8 +37,7 @@
       <view class="pf-service-card">
         <view class="pf-service-tile" wx:for="{{services}}" wx:key="label" bindtap="onTapService" data-type="{{item.type}}">
           <view class="service-icon-wrap">
-            <!-- 我的·服务宫格图标 -->
-<image src="{{item.icon}}" mode="aspectFit" class="service-icon-img" />
+            <image src="{{item.icon}}" mode="aspectFit" class="service-icon-img" />
           </view>
           <text class="service-name">{{item.label}}</text>
           <text class="service-desc">{{item.desc}}</text>
@@ -54,12 +50,10 @@
       <view class="pf-menu-card">
         <view class="pf-menu-item" wx:for="{{menuItems}}" wx:key="label" bindtap="onTapMenu" data-type="{{item.type}}">
           <view class="menu-icon-wrap">
-            <!-- 我的·服务宫格图标 -->
-<image src="{{item.icon}}" mode="aspectFit" class="menu-icon-img" />
+            <image src="{{item.icon}}" mode="aspectFit" class="menu-icon-img" />
           </view>
           <text class="menu-label">{{item.label}}</text>
-          <!-- 右箭头 -->
-<image src="/images/chevron-right.svg" mode="aspectFit" class="menu-chevron" />
+          <image src="/images/chevron-right.svg" mode="aspectFit" class="menu-chevron" />
         </view>
       </view>
     </view>
@@ -72,7 +66,6 @@
 
   <!-- 励志横幅 -->
   <view class="pf-motivation-banner">
-    </view>
     <image class="motivation-img-full" src="cloud://the-ark-heart-d9g2v024t5583b8a6.7468-the-ark-heart-d9g2v024t5583b8a6-1442771109/images/profile-banner.png" mode="aspectFill" />
   </view>
 

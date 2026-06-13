@@ -23,7 +23,7 @@
 
       <view class="detail-item" wx:if="{{detail.status === 'confirmed'}}">
         <text class="detail-label">预约编号</text>
-        <text class="detail-value mono">{{detail.appointmentId}}</text>
+        <text class="detail-value mono">{{detail._id}}</text>
       </view>
     </view>
 

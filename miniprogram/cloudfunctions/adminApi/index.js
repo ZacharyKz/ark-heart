@@ -1,11 +1,68 @@
 // 云函数：adminApi — 管理员后台 API
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
+const https = require('https');
 const db = cloud.database();
 const _ = db.command;
 
-// 管理员密码（生产环境应放环境变量）
+// 管理员密码
 const ADMIN_PASSWORD = 'ark2026admin';
+// 小程序凭证
+const APPID = 'wxbecc567e6f58bfd9';
+const APPSECRET = '793c8b69db41c44030f938a957ec0e8c';
+const TEMPLATE_ID = 'TWLsZQ3vYBhWycHcN0xN5Vd3YM5yf_p7EMRldqn3dm0';
+
+// access_token 缓存
+let cachedToken = null;
+let tokenExpireAt = 0;
+
+function getAccessToken() {
+  return new Promise((resolve, reject) => {
+    if (cachedToken && Date.now() < tokenExpireAt) {
+      return resolve(cachedToken);
+    }
+    const url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${APPID}&secret=${APPSECRET}`;
+    https.get(url, (res) => {
+      let body = '';
+      res.on('data', (d) => body += d);
+      res.on('end', () => {
+        const data = JSON.parse(body);
+        if (data.access_token) {
+          cachedToken = data.access_token;
+          tokenExpireAt = Date.now() + (data.expires_in - 300) * 1000; // 提前5分钟刷新
+          resolve(cachedToken);
+        } else {
+          reject(new Error('获取 access_token 失败: ' + body));
+        }
+      });
+    }).on('error', reject);
+  });
+}
+
+function sendWxSubscribeMsg(touser, templateId, data, page) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const token = await getAccessToken();
+      const postData = JSON.stringify({ touser, template_id: templateId, page, data, miniprogram_state: 'formal' });
+      const url = `https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=${token}`;
+      const req = https.request(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(postData) }
+      }, (res) => {
+        let body = '';
+        res.on('data', (d) => body += d);
+        res.on('end', () => {
+          const result = JSON.parse(body);
+          if (result.errcode === 0) resolve(result);
+          else reject(new Error(`微信API错误 ${result.errcode}: ${result.errmsg}`));
+        });
+      });
+      req.on('error', reject);
+      req.write(postData);
+      req.end();
+    } catch (e) { reject(e); }
+  });
+}
 
 exports.main = async (event, context) => {
   // 兼容多种调用方式
@@ -88,19 +145,18 @@ exports.main = async (event, context) => {
         // 发送订阅消息通知
         if (appt.data && appt.data._openid) {
           try {
-            await cloud.openapi.subscribeMessage.send({
-              touser: appt.data._openid,
-              templateId: 'TWLsZQ3vYBhWycHcN0xN5Vd3YM5yf_p7EMRldqn3dm0',
-              page: '/pages/records/records',
-              data: {
+            await sendWxSubscribeMsg(
+              appt.data._openid,
+              TEMPLATE_ID,
+              {
                 date3: { value: dateText || '已确认' },
                 name5: { value: appt.data.name || '来访者' },
                 thing2: { value: location || '已安排' }
               },
-              miniprogramState: 'formal'
-            });
+              '/pages/records/records'
+            );
           } catch (e) {
-            console.error('订阅消息失败:', e.errMsg || e.message);
+            console.error('订阅消息失败:', e.message);
           }
         }
 

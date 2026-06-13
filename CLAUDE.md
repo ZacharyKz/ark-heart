@@ -1,4 +1,14 @@
 # CLAUDE.md — 方舟之心 The Ark Heart
+## 零、协作规范（必须最先执行）
+
+AI 进入项目后，必须按顺序：
+
+1. 尝试: ../document-driven/team/协作规范启动文档.md
+2. 找到 → 读取，按协作流程执行
+3. 未找到 → ⚠️ 提示用户:
+   "未检测到 document-driven。请 clone 到本项目同级目录：
+    git clone <仓库地址> ../document-driven"
+4. 用户提供路径后 → 继续
 
 > AI 进项目第一个读的文件。**地图第一，规则第二。** 不重复 project.md 的内容。
 

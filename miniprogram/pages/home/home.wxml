@@ -18,7 +18,7 @@
 
   <!-- Banner -->
   <view class="banner-area">
-    <image class="banner-img" src="https://7468-the-ark-heart-d9g2v024t5583b8a6-1442771109.tcb.qcloud.la/images/logo.png" mode="aspectFill" />
+    <image class="banner-img" src="cloud://the-ark-heart-d9g2v024t5583b8a6.7468-the-ark-heart-d9g2v024t5583b8a6-1442771109/images/logo.png" mode="aspectFill" />
   </view>
 
   <view class="content-body">

@@ -14,6 +14,11 @@
     </view>
   </view>
 
+  <!-- Banner 背景图 -->
+  <view class="banner-area">
+    <image class="banner-img" src="cloud://the-ark-heart-d9g2v024t5583b8a6.7468-the-ark-heart-d9g2v024t5583b8a6-1442771109/images/EF16E4C1FF01EE7C9F47E1A0733FC9C8.jpg" mode="aspectFill" />
+  </view>
+
   <!-- 用户信息 -->
   <view class="pf-header-banner">
     <button wx:if="{{!isLogin}}" class="wx-login-btn" bindtap="onWxLogin">
@@ -29,7 +34,6 @@
         <text class="pf-user-name">{{userInfo.nickname || '来访者'}}</text>
         <text class="pf-user-motto">愿你心安，找到内心的方舟</text>
       </view>
-      <text class="pf-edit-link" bindtap="onEditProfile">编辑资料 &gt;</text>
     </block>
   </view>
 

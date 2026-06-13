@@ -10,27 +10,27 @@
 .header-menu { padding: 16rpx; margin-right: -16rpx; }
 
 /* Banner 背景图 */
-.banner-area { width: 100%; height: 390rpx; }
+.banner-area { width: 100%; height: 390rpx; position: relative; }
 .banner-img { width: 100%; height: 100%; }
 
 
 /* Banner 背景图 */
-.banner-area { width: 100%; height: 390rpx; }
+.banner-area { width: 100%; height: 390rpx; position: relative; }
 .banner-img { width: 100%; height: 100%; }
 /* 用户信息 */
 
 /* Banner 背景图 */
-.banner-area { width: 100%; height: 390rpx; }
+.banner-area { width: 100%; height: 390rpx; position: relative; }
 .banner-img { width: 100%; height: 100%; }
-.pf-header-banner { display: flex; align-items: center; padding: 32rpx 40rpx; gap: 28rpx; }
+.pf-header-banner { position: absolute; bottom: 0; left: 0; right: 0; display: flex; align-items: center; padding: 32rpx 40rpx; gap: 28rpx; background: linear-gradient(transparent, rgba(0,0,0,0.5)); }
 
 /* Banner 背景图 */
-.banner-area { width: 100%; height: 390rpx; }
+.banner-area { width: 100%; height: 390rpx; position: relative; }
 .banner-img { width: 100%; height: 100%; }
-.pf-avatar { width: 112rpx; height: 112rpx; border-radius: 50%; border: 4rpx solid #fff; box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.08); }
+.pf-avatar { width: 112rpx; height: 112rpx; border-radius: 50%; border: 3rpx solid rgba(255,255,255,0.6); box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.08); }
 .pf-user-info { flex: 1; min-width: 0; }
-.pf-user-name { font-size: 36rpx; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4rpx; }
-.pf-user-motto { font-size: 24rpx; color: var(--text-secondary); }
+.pf-user-name { font-size: 36rpx; font-weight: 700; color: #fff; display: block; margin-bottom: 4rpx; }
+.pf-user-motto { font-size: 24rpx; color: rgba(255,255,255,0.8); }
 .pf-edit-link { font-size: 24rpx; color: var(--text-tertiary); flex-shrink: 0; }
 
 /* 微信登录按钮 */

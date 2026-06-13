@@ -14,27 +14,23 @@
     </view>
   </view>
 
-  <!-- Banner 背景图 -->
+
+  <!-- Banner 背景 + 用户信息覆盖 -->
   <view class="banner-area">
     <image class="banner-img" src="cloud://the-ark-heart-d9g2v024t5583b8a6.7468-the-ark-heart-d9g2v024t5583b8a6-1442771109/images/EF16E4C1FF01EE7C9F47E1A0733FC9C8.jpg" mode="aspectFill" />
-  </view>
-
-  <!-- 用户信息 -->
-  <view class="pf-header-banner">
-    <button wx:if="{{!isLogin}}" class="wx-login-btn" bindtap="onWxLogin">
-      <!-- 用户默认头像 -->
-<image class="pf-avatar" src="/images/default-avatar.svg" mode="aspectFill" />
-      <view class="pf-user-info">
-        <text class="pf-user-name">微信一键登录</text>
-      </view>
-    </button>
-    <block wx:else>
-      <image class="pf-avatar" src="{{userInfo.avatar || '/images/default-avatar.svg'}}" mode="aspectFill" />
-      <view class="pf-user-info">
-        <text class="pf-user-name">{{userInfo.nickname || '来访者'}}</text>
-        <text class="pf-user-motto">愿你心安，找到内心的方舟</text>
-      </view>
-    </block>
+    <view class="pf-header-banner">
+      <button wx:if="{{!isLogin}}" class="wx-login-btn" bindtap="onWxLogin">
+        <image class="pf-avatar" src="/images/default-avatar.svg" mode="aspectFill" />
+        <view class="pf-user-info"><text class="pf-user-name">微信一键登录</text></view>
+      </button>
+      <block wx:else>
+        <image class="pf-avatar" src="{{userInfo.avatar || '/images/default-avatar.svg'}}" mode="aspectFill" />
+        <view class="pf-user-info">
+          <text class="pf-user-name">{{userInfo.nickname || '来访者'}}</text>
+          <text class="pf-user-motto">愿你心安，找到内心的方舟</text>
+        </view>
+      </block>
+    </view>
   </view>
 
   <view wx:if="{{isLogin}}">

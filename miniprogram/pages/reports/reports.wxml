@@ -4,7 +4,8 @@
 
   <view class="brand-header">
     <view class="header-left">
-      <image class="header-logo" src="/images/logo.svg" mode="aspectFit" />
+      <!-- 左上角 Logo -->
+<image class="header-logo" src="/images/logo.svg" mode="aspectFit" />
       <text class="header-title">The Ark Heart</text>
     </view>
     <view class="header-menu" bindtap="onMenuTap">
@@ -27,7 +28,8 @@
     <view class="rpt-stats-row">
       <view class="rpt-stat-card" wx:for="{{stats}}" wx:key="label">
         <view class="stat-icon">
-          <image src="{{item.icon}}" mode="aspectFit" class="stat-icon-img" />
+          <!-- 报告·概览统计图标 -->
+<image src="{{item.icon}}" mode="aspectFit" class="stat-icon-img" />
         </view>
         <view class="stat-info">
           <text class="stat-num">{{item.num}}</text>
@@ -43,7 +45,8 @@
       <text class="rpt-list-title">报告列表</text>
       <view class="rpt-list-filter" bindtap="onFilterTap">
         <text>筛选</text>
-        <image src="/images/chevron-down.svg" mode="aspectFit" class="filter-arrow" />
+        <!-- 下箭头 -->
+<image src="/images/chevron-down.svg" mode="aspectFit" class="filter-arrow" />
       </view>
     </view>
 
@@ -58,7 +61,8 @@
           <text class="entry-meta">咨询报告 · {{item.dateText}}</text>
         </view>
         <view class="entry-chevron">
-          <image src="/images/chevron-right.svg" mode="aspectFit" class="chevron-icon" />
+          <!-- 右箭头 -->
+<image src="/images/chevron-right.svg" mode="aspectFit" class="chevron-icon" />
         </view>
       </view>
     </view>

@@ -4,7 +4,8 @@
 
   <view class="header-row">
     <view class="back-btn" bindtap="onBack">
-      <image src="/images/chevron-left.svg" mode="aspectFit" class="back-icon" />
+      <!-- 返回按钮 -->
+<image src="/images/chevron-left.svg" mode="aspectFit" class="back-icon" />
     </view>
     <text class="header-title">预约详情</text>
     <view class="header-spacer"></view>

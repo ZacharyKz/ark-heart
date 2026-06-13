@@ -3,7 +3,8 @@
   <view class="status-bar-placeholder"></view>
   <view class="header-row">
     <view class="back-btn" bindtap="onBack">
-      <image src="/images/chevron-left.svg" mode="aspectFit" class="back-icon" />
+      <!-- 返回按钮 -->
+<image src="/images/chevron-left.svg" mode="aspectFit" class="back-icon" />
     </view>
     <text class="header-title">咨询报告</text>
     <view class="header-spacer"></view>
@@ -76,7 +77,8 @@
     <!-- 尾部 -->
     <view class="rpt-footer">
       <view class="back-bottom" bindtap="onBack">
-        <image src="/images/chevron-left.svg" mode="aspectFit" class="back-bottom-icon" />
+        <!-- 返回按钮 -->
+<image src="/images/chevron-left.svg" mode="aspectFit" class="back-bottom-icon" />
         <text>返回报告列表</text>
       </view>
       <view class="rpt-divider"></view>

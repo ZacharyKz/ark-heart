@@ -3,7 +3,8 @@
   <view class="status-bar-placeholder"></view>
   <view class="header-row">
     <view class="back-btn" bindtap="onBack">
-      <image src="/images/chevron-left.svg" mode="aspectFit" class="back-icon" />
+      <!-- 返回按钮 -->
+<image src="/images/chevron-left.svg" mode="aspectFit" class="back-icon" />
     </view>
     <text class="header-title">预约咨询</text>
     <view class="header-spacer"></view>
@@ -41,7 +42,8 @@
         <picker mode="selector" range="{{ageOptions}}" bindchange="onAgeChange" value="{{ageIndex}}">
           <view class="picker-value">
             <text class="{{formData.age ? '' : 'placeholder'}}">{{formData.age || '请选择您的年龄段'}}</text>
-            <image src="/images/chevron-right.svg" mode="aspectFit" class="picker-arrow" />
+            <!-- 右箭头 -->
+<image src="/images/chevron-right.svg" mode="aspectFit" class="picker-arrow" />
           </view>
         </picker>
       </view>
@@ -78,7 +80,8 @@
     <view class="agreement-check">
       <view class="checkbox-wrapper" bindtap="tapAgree">
         <view class="checkbox {{agreed ? 'checked' : ''}}">
-          <image wx:if="{{agreed}}" src="/images/icon-check.svg" mode="aspectFit" class="check-icon" />
+          <!-- 协议勾选图标 -->
+<image wx:if="{{agreed}}" src="/images/icon-check.svg" mode="aspectFit" class="check-icon" />
         </view>
         <text class="agreement-label">我已阅读并同意《<text class="link" catchtap="readAgreement">咨询与预约协议</text>》</text>
       </view>

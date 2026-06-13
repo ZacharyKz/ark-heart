@@ -164,30 +164,6 @@
         </form>
       </section>
 
-      <!-- 图片管理 -->
-      <section v-if="activeTab === 'images'" class="images">
-        <div class="img-mgr-header">
-          <span class="rpt-count">共 {{ imageList.length }} 张图片</span>
-          <label class="btn-upload-img">
-            <input type="file" accept="image/*" @change="onUploadImage" style="display:none" ref="imgUploadInput" />
-            上传新图片
-          </label>
-        </div>
-        <div class="img-grid-mgr">
-          <div class="img-card-mgr" v-for="img in imageList" :key="img.Key">
-            <img :src="img.tempUrl || img.cloudUrl" class="img-preview-mgr" />
-            <div class="img-name">{{ img.name }}</div>
-            <div class="img-actions">
-              <label class="act-btn report small" style="cursor:pointer">
-                <input type="file" accept="image/*" @change="(e) => onReplaceImage(e, img)" style="display:none" />
-                替换
-              </label>
-              <button class="act-btn delete-btn small" @click="onDeleteImage(img)">删除</button>
-            </div>
-          </div>
-        </div>
-        <div v-if="imageList.length === 0" class="empty">暂无图片</div>
-      </section>
     </main>
 
     <!-- 确认预约弹窗 -->
@@ -231,8 +207,7 @@ const confirmForm = ref({ counselor: '', dateText: '', location: '' });
 const tabs = [
   { key: 'appointments', label: '预约管理' },
   { key: 'stats', label: '数据统计' },
-  { key: 'reports', label: '报告管理' },
-  { key: 'images', label: '图片管理' }
+  { key: 'reports', label: '报告管理' }
 ];
 
 const filters = [
@@ -446,62 +421,11 @@ onMounted(() => {
 });
 
 // tab 切换时刷新数据
-const imageList = ref([]);
-
-async function loadImages() {
-  try {
-    const res = await callAdminApi('listImages');
-    if (res.success) {
-      const list = (res.data || []).map(f => ({
-        ...f,
-        name: f.Key ? f.Key.replace('images/', '') : '',
-        cloudUrl: `cloud://the-ark-heart-d9g2v024t5583b8a6.7468-the-ark-heart-d9g2v024t5583b8a6-1442771109/images/${(f.Key || '').replace('images/', '')}`,
-        tempUrl: f.url || ''
-      }));
-      imageList.value = list;
-    }
-  } catch (e) { console.error('loadImages:', e); }
-}
-
-async function onUploadImage(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  try {
-    const result = await uploadImage(file);
-    await callAdminApi('saveImage', { key: 'images/' + file.name, name: file.name });
-    alert('上传成功');
-    loadImages();
-  } catch (e) { alert('上传失败: ' + (e.message || e)); }
-  e.target.value = '';
-}
-
-async function onReplaceImage(e, img) {
-  const file = e.target.files[0];
-  if (!file) return;
-  try {
-    await callAdminApi('deleteImage', { key: img.Key, id: img._id });
-    const result = await uploadImage(file);
-    await callAdminApi('saveImage', { key: img.Key, name: img.name || file.name });
-    alert('替换成功');
-    loadImages();
-  } catch (err) { alert('替换失败: ' + (err.message || err)); }
-  e.target.value = '';
-}
-
-async function onDeleteImage(img) {
-  if (!confirm('删除 ' + img.name + '？')) return;
-  try {
-    await callAdminApi('deleteImage', { key: img.Key });
-    loadImages();
-  } catch (e) { alert('删除失败'); }
-}
-
 function switchTab(key) {
   activeTab.value = key;
   if (key === 'appointments') loadAppointments(currentFilter.value);
   if (key === 'stats') loadStats();
   if (key === 'reports') loadReports();
-  if (key === 'images') loadImages();
 }
 </script>
 

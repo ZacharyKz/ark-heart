@@ -39,7 +39,7 @@ function getAccessToken() {
   });
 }
 
-function sendWxSubscribeMsg(touser, templateId, data, page) {
+function sendWxSubscribeMsg(touser, templateId, data, page, retry = true) {
   return new Promise(async (resolve, reject) => {
     try {
       const token = await getAccessToken();
@@ -51,10 +51,22 @@ function sendWxSubscribeMsg(touser, templateId, data, page) {
       }, (res) => {
         let body = '';
         res.on('data', (d) => body += d);
-        res.on('end', () => {
+        res.on('end', async () => {
           const result = JSON.parse(body);
-          if (result.errcode === 0) resolve(result);
-          else reject(new Error(`微信API错误 ${result.errcode}: ${result.errmsg}`));
+          if (result.errcode === 0) {
+            resolve(result);
+          } else if (result.errcode === 40001 && retry) {
+            // token 过期，清缓存重试一次
+            cachedToken = null;
+            tokenExpireAt = 0;
+            console.log('access_token 过期，重试中...');
+            try {
+              const retryResult = await sendWxSubscribeMsg(touser, templateId, data, page, false);
+              resolve(retryResult);
+            } catch (e) { reject(e); }
+          } else {
+            reject(new Error(`微信API错误 ${result.errcode}: ${result.errmsg}`));
+          }
         });
       });
       req.on('error', reject);
@@ -143,21 +155,36 @@ exports.main = async (event, context) => {
         });
 
         // 发送订阅消息通知
+        console.log(`[confirm] openid=${appt.data?._openid} name=${appt.data?.name}`);
         if (appt.data && appt.data._openid) {
           try {
-            await sendWxSubscribeMsg(
+            console.log(`[confirm] sending to ${appt.data._openid}...`);
+            // date3 字段只接受日期（不带时间），格式 "2026年06月22日"
+            let d = (dateText || '').replace(/：/g, ':').trim();
+            // 去掉时间部分
+            d = d.replace(/\s+\d{1,2}:\d{2}$/, '').replace(/\s+\d{1,2}：\d{2}$/, '');
+            if (d && !/^\d{4}[年-]/.test(d)) {
+              d = `2026年${d}`;
+            }
+            // 补零: "6月" → "06月", "2日" → "02日"
+            d = d.replace(/(\d+)月(\d+)日/, (_, m, dd) => `${m.padStart(2,'0')}月${dd.padStart(2,'0')}日`);
+            d = d.replace(/(\d+)月/, (_, m) => `${m.padStart(2,'0')}月`);
+            const wxRes = await sendWxSubscribeMsg(
               appt.data._openid,
               TEMPLATE_ID,
               {
-                date3: { value: dateText || '已确认' },
+                date3: { value: d || '已确认' },
                 name5: { value: appt.data.name || '来访者' },
                 thing2: { value: location || '已安排' }
               },
               '/pages/records/records'
             );
+            console.log(`[confirm] wx success: ${JSON.stringify(wxRes)}`);
           } catch (e) {
-            console.error('订阅消息失败:', e.message);
+            console.error(`[confirm] fail: ${e.message}`);
           }
+        } else {
+          console.log(`[confirm] SKIP: no openid on appointment`);
         }
 
         return { success: true, message: '预约已确认' };

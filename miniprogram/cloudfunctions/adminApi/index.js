@@ -43,7 +43,7 @@ function sendWxSubscribeMsg(touser, templateId, data, page) {
   return new Promise(async (resolve, reject) => {
     try {
       const token = await getAccessToken();
-      const postData = JSON.stringify({ touser, template_id: templateId, page, data, miniprogram_state: 'formal' });
+      const postData = JSON.stringify({ touser, template_id: templateId, page, data, miniprogram_state: 'trial' });
       const url = `https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=${token}`;
       const req = https.request(url, {
         method: 'POST',

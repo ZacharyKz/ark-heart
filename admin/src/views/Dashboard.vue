@@ -217,7 +217,7 @@ const filters = [
   { key: 'cancelled', label: '已取消' }
 ];
 
-const dirMap = { love_marriage: '爱情婚姻', parent_child: '亲子互动', workplace: '职场人际', other: '其他' };
+const dirMap = { love_marriage: '爱情婚姻', parent_child: '亲子互动', workplace: '职场人际', personal_growth: '个人成长', other: '其他' };
 const modeMap = { online: '线上', offline: '线下', both: '均可' };
 const statusMap = { pending: '待确认', confirmed: '已确认', done: '已完成', cancelled: '已取消' };
 

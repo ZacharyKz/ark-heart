@@ -14,7 +14,7 @@
 
   <!-- Banner -->
   <view class="reports-banner">
-    <image src="/images/reports-banner.jpg" mode="aspectFill" class="banner-img" />
+    <!-- reports banner bg via CDN -->
     <view class="banner-overlay">
       <text class="banner-title">我的报告</text>
       <text class="banner-sub">查看您的咨询与成长记录</text>

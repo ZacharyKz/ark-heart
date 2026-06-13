@@ -18,7 +18,7 @@
 
   <!-- Banner -->
   <view class="banner-area">
-    <image class="banner-img" src="/images/banner.jpg" mode="aspectFill" />
+    <!-- banner bg via CDN -->
   </view>
 
   <view class="content-body">

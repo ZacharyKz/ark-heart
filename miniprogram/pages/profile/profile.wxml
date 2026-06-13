@@ -70,7 +70,7 @@
       <text class="motivation-quote">每一步探索，\n都在靠近更好的自己。</text>
       <text class="motivation-author">— The Ark Heart</text>
     </view>
-    <image class="motivation-img" src="/images/motivation.jpg" mode="aspectFill" />
+    <!-- motivation bg via CDN -->
   </view>
 
   <tab-bar current="{{3}}" />

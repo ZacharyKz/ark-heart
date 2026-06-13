@@ -60,4 +60,4 @@
 .motivation-text { flex: 1; }
 .motivation-quote { font-size: 30rpx; font-weight: 600; color: var(--text-primary); line-height: 1.6; display: block; margin-bottom: 12rpx; }
 .motivation-author { font-size: 24rpx; color: var(--text-secondary); }
-.motivation-img { width: 160rpx; height: 160rpx; border-radius: 20rpx; flex-shrink: 0; }
+.motivation-img { width: 160rpx; height: 160rpx; border-radius: 20rpx; flex-shrink: 0; background: url(https://7468-the-ark-heart-d9g2v024t5583b8a6-1442771109.tcb.qcloud.la/images/profile-banner.png) center/cover no-repeat; }
